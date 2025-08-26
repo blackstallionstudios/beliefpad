@@ -1,0 +1,2 @@
+- To Do
+Add readme.md to package with installation commands and .command Open Sesame file for e.o.u
