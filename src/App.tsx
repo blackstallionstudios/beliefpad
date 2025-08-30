@@ -82,9 +82,9 @@ export default function App() {
               width: '60px',
               height: '60px',
               borderRadius: '50%',
-              backgroundColor: 'var(--color-primary, #007acc)',
-              color: 'white',
-              border: 'none',
+              backgroundColor: 'white',
+              color: 'black',
+              border: '1px solid black',
               fontSize: '24px',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -93,7 +93,6 @@ export default function App() {
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.2s ease',
-              fontFamily: 'var(--font-family)',
               textDecoration: 'none'
             }}
             onMouseEnter={(e) => {
@@ -105,7 +104,7 @@ export default function App() {
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
             }}
           >
-            💬
+            &#x1F5E8;
           </a>
 
           {showDisclaimer && (
