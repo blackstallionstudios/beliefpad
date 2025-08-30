@@ -80,8 +80,8 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
                 />
                 <span style={{ fontFamily: 'var(--font-sans)' }}>sans-serif</span>
               </label>
-              /*
-              <label className="radio-option">
+
+              {/*<label className="radio-option">
                 <input
                   type="radio"
                   name="font"
@@ -91,7 +91,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
                 />
                 <span style={{ fontFamily: 'var(--font-serif)' }}>serif</span>
               </label>
-              */
+              */}
             </div>
           </div>
 
