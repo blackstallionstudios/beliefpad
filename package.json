@@ -12,7 +12,7 @@
     "deploy": "npm run build && vercel",
     "preview:prod": "vite build && serve -s dist",
     "deploy:prod": "npm run build && vercel --prod",
-    "deploy:full": "npm run build && vercel --prod && update-git",
+    "deploy:full": "npm run build && vercel --prod",
     "update-git": "git add . && read -p \"Enter commit message: \" commit_msg && git commit -m \"$commit_msg\" && git push"
   },
   "dependencies": {

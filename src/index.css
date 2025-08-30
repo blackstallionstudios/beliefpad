@@ -124,7 +124,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root[data-font="serif"] {
   --font-family: var(--font-serif);
-  font-size: 16px;   /* bump size */
+  font-size: 18px;   /* increased from 16px to 18px */
   line-height: 1.6;  /* increase spacing */
 }
 
