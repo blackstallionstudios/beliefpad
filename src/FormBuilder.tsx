@@ -4,7 +4,7 @@ import { generatePDF } from "./pdfGenerator";
 import { toast } from "sonner";
 import { generateJSON } from "./jsonGenerator";
 import { loadJSON } from "./jsonLoader";
-import { defaultTemplate } from "./template";
+import { defaultTemplate, getFullSubheading } from "./template";
 import { exportAllJSON, clearSavedForms } from "./jsonUtils";
 import { EmailModal } from "./EmailModal";
 import { generateEmailContent } from "./emailGenerator";
@@ -426,7 +426,7 @@ useEffect(() => {
                <option value="">select a subheading...</option>
                {template.subheadings.map((heading) => (
                  <option key={heading} value={heading}>
-                   {heading}
+                   {getFullSubheading(heading)}
                  </option>
                ))}
              </select>
@@ -442,7 +442,7 @@ useEffect(() => {
          {sections.map((section) => (
            <div key={section.id} className="section-horizontal">
              <div className="section-title">
-               {section.subheading}
+               {getFullSubheading(section.subheading)}
              </div>
              <div className="section-input">
                <textarea
@@ -455,7 +455,7 @@ useEffect(() => {
                  }}
                  value={section.content}
                  onChange={(e) => handleTextareaInput(e, section.id)}
-                 placeholder={`enter statement for ${section.subheading}...`}
+                 placeholder={`enter statement for ${getFullSubheading(section.subheading)}...`}
                  className="input"
                  style={{ 
                    width: '100%', 

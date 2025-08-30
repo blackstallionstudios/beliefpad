@@ -67,6 +67,47 @@ export default function App() {
           <main className="flex-1" style={{ width: '100%' }}>
             <Content />
           </main>
+
+          {/* Floating Feedback Button */}
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfTDqT7fIbduGnyHS4cngkAKNSwWYukwFQJce3SRs8dqDee8g/viewform?usp=dialog"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="feedback-button"
+            title="Send Feedback"
+            style={{
+              position: 'fixed',
+              right: '20px',
+              bottom: '20px',
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--color-primary, #007acc)',
+              color: 'white',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              zIndex: 1000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              fontFamily: 'var(--font-family)',
+              textDecoration: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            }}
+          >
+            💬
+          </a>
+
           {showDisclaimer && (
             <footer className="disclaimer-footer">
               <div className="disclaimer-content">
