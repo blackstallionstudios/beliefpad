@@ -1,4 +1,4 @@
-import { FormSection } from "./FormBuilder";
+import { FormSection, ConnectedEmotionsSection } from "./FormBuilder";
 import { toast } from "sonner";
 
 /**
@@ -10,6 +10,7 @@ import { toast } from "sonner";
  * @param setSessionType A function to set the session type state.
  * @param setSourceOfBelief A function to set the source of belief state.
  * @param setSections A function to set the form sections state.
+ * @param setConnectedEmotionsSections A function to set the connected emotions sections state.
  */
 export function loadJSON(
     storageKey: string,
@@ -18,7 +19,8 @@ export function loadJSON(
     setDetails: (details: string) => void,
     setSessionType: (sessionType: string) => void,
     setSourceOfBelief: (sourceOfBelief: string) => void,
-    setSections: (sections: FormSection[]) => void
+    setSections: (sections: FormSection[]) => void,
+    setConnectedEmotionsSections: (sections: ConnectedEmotionsSection[]) => void
 ) {
     try {
         const jsonString = localStorage.getItem(storageKey);
@@ -36,7 +38,8 @@ export function loadJSON(
             setDetails(sessionData.details);
             setSessionType(sessionData.sessionType);
             setSourceOfBelief(sessionData.sourceOfBelief || "");
-            setSections(sessionData.sections);
+            setSections(sessionData.sections || []);
+            setConnectedEmotionsSections(sessionData.connectedEmotionsSections || []);
             toast.success(`Form for "${sessionData.title}" loaded successfully!`);
         } else {
             toast.error(`Invalid JSON data found for key: ${storageKey}`);

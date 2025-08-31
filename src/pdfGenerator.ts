@@ -1,4 +1,4 @@
-import { FormSection } from "./FormBuilder";
+import { FormSection, ConnectedEmotionsSection } from "./FormBuilder";
 import { jsPDF } from 'jspdf';
 import Raleway from './Raleway-Light.ttf';
 import RalewayBold from './Raleway-Bold.ttf';
@@ -12,7 +12,8 @@ export async function generatePDF(
   details: string, 
   sessionType: string, 
   sourceOfBelief: string,
-  sections: FormSection[]
+  sections: FormSection[],
+  connectedEmotionsSections?: ConnectedEmotionsSection[]
 ) {
   try {
     console.log("PG: Starting PDF generation...");
@@ -162,7 +163,7 @@ export async function generatePDF(
     console.log("PG: Session type rendered successfully. Continuing...");
 
     // If no sections, add a placeholder
-    if (!sections || sections.length === 0) {
+    if ((!sections || sections.length === 0) && (!connectedEmotionsSections || connectedEmotionsSections.length === 0)) {
       sections = [{
         subheading: 'No Sections',
         content: 'No content available.',
@@ -179,36 +180,96 @@ export async function generatePDF(
 
     console.log("PG: Separator rendered successfully. Continuing...");
 
-    // Add sections
+    // Add regular sections
     pdf.setFontSize(12);
-    sections.forEach((section, index) => {
-      // Check for new page
+    if (sections && sections.length > 0) {
+      sections.forEach((section, index) => {
+        // Check for new page
+        if (yPosition > pageHeight - 40) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        // Section heading and content side by side in Raleway
+        pdf.setFont('Raleway', 'bold');
+        const fullHeading = getFullSubheading(section.subheading);
+        const heading = fullHeading.toUpperCase();
+        const headingWidth = pdf.getTextWidth(heading);
+        pdf.text(heading, margin, yPosition);
+
+        pdf.setFont('Raleway', 'normal');
+        const contentX = margin + headingWidth + 8; // 8 units space between heading and content
+        const splitContentSide = pdf.splitTextToSize(section.content, pdf.internal.pageSize.width - contentX - margin);
+
+        // Print first line of content beside heading, rest below (indented)
+        if (splitContentSide.length > 0) {
+          pdf.text(splitContentSide[0], contentX, yPosition);
+          for (let i = 1; i < splitContentSide.length; i++) {
+            yPosition += lineHeight;
+            pdf.text(splitContentSide[i], contentX, yPosition);
+          }
+        }
+        yPosition += lineHeight * 1.5;
+      });
+    }
+
+    // Add Connected Emotions sections
+    if (connectedEmotionsSections && connectedEmotionsSections.length > 0) {
+      // Add Connected Emotions header
       if (yPosition > pageHeight - 40) {
         pdf.addPage();
         yPosition = 20;
       }
-
-      // Section heading and content side by side in Raleway
+      
+      pdf.setFontSize(14);
       pdf.setFont('Raleway', 'bold');
-      const fullHeading = getFullSubheading(section.subheading);
-      const heading = fullHeading.toUpperCase();
-      const headingWidth = pdf.getTextWidth(heading);
-      pdf.text(heading, margin, yPosition);
-
-      pdf.setFont('Raleway', 'normal');
-      const contentX = margin + headingWidth + 8; // 8 units space between heading and content
-      const splitContentSide = pdf.splitTextToSize(section.content, pdf.internal.pageSize.width - contentX - margin);
-
-      // Print first line of content beside heading, rest below (indented)
-      if (splitContentSide.length > 0) {
-        pdf.text(splitContentSide[0], contentX, yPosition);
-        for (let i = 1; i < splitContentSide.length; i++) {
-          yPosition += lineHeight;
-          pdf.text(splitContentSide[i], contentX, yPosition);
-        }
-      }
+      pdf.text('CONNECTED EMOTIONS', margin, yPosition);
       yPosition += lineHeight * 1.5;
-    });
+      
+      pdf.setFontSize(12);
+      
+      connectedEmotionsSections.forEach((section) => {
+        // Check for new page
+        if (yPosition > pageHeight - 40) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        // Section heading
+        pdf.setFont('Raleway', 'bold');
+        const fullHeading = getFullSubheading(section.selectedHeading);
+        const heading = fullHeading.toUpperCase();
+        pdf.text(heading, margin, yPosition);
+        yPosition += lineHeight;
+
+        // Subsections
+        if (section.subsections && section.subsections.length > 0) {
+          section.subsections.forEach((subsection) => {
+            if (subsection.content && subsection.content.trim()) {
+              // Check for new page
+              if (yPosition > pageHeight - 40) {
+                pdf.addPage();
+                yPosition = 20;
+              }
+
+              pdf.setFont('Raleway', 'normal');
+              const splitContent = pdf.splitTextToSize(subsection.content, pdf.internal.pageSize.width - 2 * margin);
+              splitContent.forEach((line: string) => {
+                if (yPosition > pageHeight - 20) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                pdf.text(line, margin + 10, yPosition); // Indent subsections
+                yPosition += lineHeight;
+              });
+              yPosition += lineHeight * 0.5;
+            }
+          });
+        }
+        yPosition += lineHeight;
+      });
+    }
+
     console.log("PG: Sections rendered successfully. Continuing...");
     // Footer
     if (yPosition > pageHeight - 40) {

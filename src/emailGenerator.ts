@@ -1,4 +1,4 @@
-import { FormSection } from "./FormBuilder";
+import { FormSection, ConnectedEmotionsSection } from "./FormBuilder";
 import { getFullSubheading } from "./template";
 
 export function generateEmailContent(
@@ -7,7 +7,8 @@ export function generateEmailContent(
   details: string,
   sessionType: string,
   sourceOfBelief: string,
-  sections: FormSection[]
+  sections: FormSection[],
+  connectedEmotionsSections?: ConnectedEmotionsSection[]
 ): { subject: string; body: string } {
   const emailSubject = `Belief Code Session for ${clientName}`;
   
@@ -68,18 +69,43 @@ export function generateEmailContent(
     section.content && section.content.trim()
   );
   
+  // Filter connected emotions sections to only include those with content
+  const connectedEmotionsWithContent = connectedEmotionsSections?.filter(section => 
+    section.subsections.some(subsection => subsection.content && subsection.content.trim())
+  ) || [];
+  
   // Only add separator and sections if there are sections with content
-  if (sectionsWithContent.length > 0) {
+  if (sectionsWithContent.length > 0 || connectedEmotionsWithContent.length > 0) {
     bodyLines.push('────────────────────────────────────────────────────────────────────────────────────────');
     bodyLines.push('');
     
-    // Add sections with content
+    // Add regular sections with content
     sectionsWithContent.forEach((section) => {
       const fullHeading = getFullSubheading(section.subheading);
       const heading = fullHeading.toUpperCase();
       
       bodyLines.push(`${heading}: ${section.content}`);
     });
+    
+    // Add Connected Emotions sections
+    if (connectedEmotionsWithContent.length > 0) {
+      bodyLines.push('');
+      bodyLines.push('CONNECTED EMOTIONS:');
+      bodyLines.push('');
+      
+      connectedEmotionsWithContent.forEach((section) => {
+        const fullHeading = getFullSubheading(section.selectedHeading);
+        const heading = fullHeading.toUpperCase();
+        bodyLines.push(`${heading}:`);
+        
+        section.subsections.forEach((subsection) => {
+          if (subsection.content && subsection.content.trim()) {
+            bodyLines.push(`  ${subsection.content}`);
+          }
+        });
+        bodyLines.push('');
+      });
+    }
   }
   
   return {

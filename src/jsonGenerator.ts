@@ -1,4 +1,6 @@
 // jsonGenerator.ts
+import { ConnectedEmotionsSection } from "./FormBuilder";
+
 export function generateJSON(
   clientName: string,
   subject: string,
@@ -6,6 +8,7 @@ export function generateJSON(
   sessionType: string,
   sourceOfBelief: string,
   sections: { id: string; subheading: string; content: string }[],
+  connectedEmotionsSections?: ConnectedEmotionsSection[],
   storageKey?: string // optional
 ) {
   const sessionData = {
@@ -15,6 +18,7 @@ export function generateJSON(
     sessionType,
     sourceOfBelief,
     sections,
+    connectedEmotionsSections: connectedEmotionsSections || [],
     timestamp: new Date().toISOString(),
   };
 
