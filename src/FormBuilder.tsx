@@ -727,7 +727,7 @@ useEffect(() => {
              }}
              title="Open session in read-only view"
            >
-             👁️ view session
+            view session
            </button>
            
            <button onClick={exportToPDF} className="btn btn-primary">
