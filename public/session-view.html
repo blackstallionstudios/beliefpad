@@ -15,33 +15,33 @@
         .session-view {
             max-width: 800px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 0.5rem;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
+            line-height: 1.5;
             color: #333;
         }
         
         .session-view .header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e5e5e5;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e5e5;
         }
         
         .session-view .client-name {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
         
         .session-view .session-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 6px;
         }
         
         .session-view .info-item {
@@ -50,50 +50,50 @@
         }
         
         .session-view .info-label {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.125rem;
         }
         
         .session-view .info-value {
-            font-size: 1rem;
+            font-size: 0.875rem;
             color: #333;
         }
         
         .session-view .section {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
             border: 1px solid #e5e5e5;
-            border-radius: 6px;
+            border-radius: 4px;
             background: white;
         }
         
         .session-view .section-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
             border-bottom: 1px solid #ecf0f1;
         }
         
         .session-view .section-content {
-            font-size: 1rem;
-            line-height: 1.7;
+            font-size: 0.875rem;
+            line-height: 1.5;
             color: #34495e;
             white-space: pre-wrap;
         }
         
         .session-view .connected-emotions-header {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #2c3e50;
-            margin: 2rem 0 1rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #3498db;
+            margin: 1rem 0 0.5rem 0;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #3498db;
         }
         
         .session-view .empty-content {
@@ -111,11 +111,168 @@
                 page-break-inside: avoid;
             }
         }
+        
+        /* Share Modal Styles */
+        .share-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .share-modal {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .share-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .share-content p {
+            margin: 0 0 1rem 0;
+            color: #666;
+        }
+        
+        .url-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .url-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            background: #f9f9f9;
+        }
+        
+        .copy-btn {
+            padding: 0.75rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .share-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .share-option-btn {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .share-option-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        /* Share button in session view */
+        .share-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1rem;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+        
+        .share-button:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body>
     <div id="session-container" class="session-view">
         <!-- Session content will be inserted here -->
+    </div>
+    
+    <div id="share-container" style="display: none;">
+        <div class="share-overlay">
+            <div class="share-modal">
+                <div class="share-header">
+                    <h3>Share Session</h3>
+                    <button onclick="closeShareModal()" class="close-btn">&times;</button>
+                </div>
+                <div class="share-content">
+                    <p>Copy this link to share the session:</p>
+                    <div class="url-container">
+                        <input type="text" id="share-url" readonly class="url-input">
+                        <button onclick="copyShareUrl()" class="copy-btn">Copy</button>
+                    </div>
+                    <div class="share-options">
+                        <button onclick="shareViaEmail()" class="share-option-btn">Email</button>
+                        <button onclick="shareViaWhatsApp()" class="share-option-btn">WhatsApp</button>
+                        <button onclick="shareViaTelegram()" class="share-option-btn">Telegram</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -139,6 +296,7 @@
             const container = document.getElementById('session-container');
             
             let html = `
+                <button onclick="openShareModal()" class="share-button">📤 Share Session</button>
                 <div class="header">
                     <div class="client-name">Belief Code Session for ${sessionData.clientName || 'Unknown Client'}</div>
                 </div>
@@ -236,6 +394,84 @@
 
         // Load session when page loads
         window.addEventListener('load', loadSession);
+        
+        // Share functionality
+        function openShareModal() {
+            const shareContainer = document.getElementById('share-container');
+            const shareUrl = document.getElementById('share-url');
+            shareUrl.value = window.location.href;
+            shareContainer.style.display = 'block';
+        }
+        
+        function closeShareModal() {
+            const shareContainer = document.getElementById('share-container');
+            shareContainer.style.display = 'none';
+        }
+        
+        function copyShareUrl() {
+            const shareUrl = document.getElementById('share-url');
+            shareUrl.select();
+            shareUrl.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            
+            // Show feedback
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '#007bff';
+            }, 2000);
+        }
+        
+        function shareViaEmail() {
+            const sessionDataParam = getUrlParameter('data');
+            if (sessionDataParam) {
+                const decodedData = decodeBase64(sessionDataParam);
+                if (decodedData) {
+                    try {
+                        const sessionData = JSON.parse(decodedData);
+                        const subject = `Belief Code Session - ${sessionData.clientName || 'Unknown Client'}`;
+                        const body = `View this Belief Code session: ${window.location.href}`;
+                        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                        window.location.href = mailtoLink;
+                    } catch (e) {
+                        console.error('Error parsing session data for email:', e);
+                    }
+                }
+            }
+        }
+        
+        function shareViaWhatsApp() {
+            const text = `View this Belief Code session: ${window.location.href}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function shareViaTelegram() {
+            const text = `View this Belief Code session: ${window.location.href}`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Belief Code Session')}`;
+            window.open(telegramUrl, '_blank');
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const shareContainer = document.getElementById('share-container');
+            const shareModal = document.querySelector('.share-modal');
+            
+            if (event.target === shareContainer) {
+                closeShareModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeShareModal();
+            }
+        });
     </script>
 </body>
 </html>
