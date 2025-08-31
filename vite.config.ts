@@ -15,5 +15,6 @@ export default defineConfig({
         // Let Vite/Rollup handle safe splitting automatically
       }
     }
-  }
+  },
+  publicDir: 'public' // This will copy files from public/ to dist/
 })

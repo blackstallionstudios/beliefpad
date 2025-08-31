@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session View</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .session-view {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .session-view .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        
+        .session-view .client-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .session-view .session-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .session-view .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .session-view .info-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .session-view .info-value {
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .session-view .section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            background: white;
+        }
+        
+        .session-view .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .session-view .section-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #34495e;
+            white-space: pre-wrap;
+        }
+        
+        .session-view .connected-emotions-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .session-view .empty-content {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        @media print {
+            .session-view {
+                padding: 0;
+            }
+            
+            .session-view .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="session-container" class="session-view">
+        <!-- Session content will be inserted here -->
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to decode base64 data
+        function decodeBase64(str) {
+            try {
+                return decodeURIComponent(atob(str).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Function to render the session
+        function renderSession(sessionData) {
+            const container = document.getElementById('session-container');
+            
+            let html = `
+                <div class="header">
+                    <div class="client-name">Belief Code Session for ${sessionData.clientName || 'Unknown Client'}</div>
+                </div>
+
+                <div class="session-info">
+                    <div class="info-item">
+                        <div class="info-label">Subject</div>
+                        <div class="info-value">${sessionData.subject || '—'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Session Type</div>
+                        <div class="info-value">${sessionData.sessionType || '—'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Source of Belief</div>
+                        <div class="info-value">${sessionData.sourceOfBelief || '—'}</div>
+                    </div>
+                </div>
+            `;
+
+            if (sessionData.details) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">Details</div>
+                        <div class="section-content">${sessionData.details}</div>
+                    </div>
+                `;
+            }
+
+            if (sessionData.sections && sessionData.sections.length > 0) {
+                sessionData.sections.forEach(section => {
+                    html += `
+                        <div class="section">
+                            <div class="section-title">${section.subheading}</div>
+                            <div class="section-content">
+                                ${section.content || '<span class="empty-content">No content</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
+                html += `<div class="connected-emotions-header">Connected Emotions</div>`;
+                sessionData.connectedEmotionsSections.forEach(section => {
+                    html += `
+                        <div class="section">
+                            <div class="section-title">${section.selectedHeading}</div>
+                            <div class="section-content">
+                                ${section.content || '<span class="empty-content">No content</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if ((!sessionData.sections || sessionData.sections.length === 0) && 
+                (!sessionData.connectedEmotionsSections || sessionData.connectedEmotionsSections.length === 0)) {
+                html += `
+                    <div class="section">
+                        <div class="section-content empty-content">
+                            No sections have been added to this session.
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Load session data from URL parameters
+        function loadSession() {
+            const sessionDataParam = getUrlParameter('data');
+            if (sessionDataParam) {
+                const decodedData = decodeBase64(sessionDataParam);
+                if (decodedData) {
+                    try {
+                        const sessionData = JSON.parse(decodedData);
+                        renderSession(sessionData);
+                        document.title = `Session - ${sessionData.clientName || 'Unknown Client'}`;
+                    } catch (e) {
+                        console.error('Error parsing session data:', e);
+                        document.getElementById('session-container').innerHTML = 
+                            '<div class="section"><div class="section-content">Error loading session data.</div></div>';
+                    }
+                } else {
+                    document.getElementById('session-container').innerHTML = 
+                        '<div class="section"><div class="section-content">Invalid session data.</div></div>';
+                }
+            } else {
+                document.getElementById('session-container').innerHTML = 
+                    '<div class="section"><div class="section-content">No session data provided.</div></div>';
+            }
+        }
+
+        // Load session when page loads
+        window.addEventListener('load', loadSession);
+    </script>
+</body>
+</html>

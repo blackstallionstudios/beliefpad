@@ -699,6 +699,37 @@ useEffect(() => {
        {/* Actions */}
        {(sections.length > 0 || connectedEmotionsSections.length > 0) && (
          <div className="inline-end">
+           <button 
+             onClick={() => {
+               const sessionData = {
+                 clientName,
+                 subject,
+                 details,
+                 sessionType,
+                 sourceOfBelief,
+                 sections,
+                 connectedEmotionsSections
+               };
+               
+               // Encode session data as base64 and pass it as URL parameter
+               const jsonString = JSON.stringify(sessionData);
+               const base64Data = btoa(jsonString);
+               const viewUrl = `${window.location.origin}/session-view.html?data=${base64Data}`;
+               
+               // Open in new tab
+               window.open(viewUrl, '_blank');
+             }}
+             className="btn"
+             style={{ 
+               backgroundColor: '#6366f1', 
+               color: 'white',
+               border: '1px solid #6366f1'
+             }}
+             title="Open session in read-only view"
+           >
+             👁️ view session
+           </button>
+           
            <button onClick={exportToPDF} className="btn btn-primary">
              export to pdf
            </button>
