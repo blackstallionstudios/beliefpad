@@ -229,44 +229,34 @@ export async function generatePDF(
       pdf.setFontSize(12);
       
       connectedEmotionsSections.forEach((section) => {
-        // Check for new page
-        if (yPosition > pageHeight - 40) {
-          pdf.addPage();
-          yPosition = 20;
-        }
+        if (section.content && section.content.trim()) {
+          // Check for new page
+          if (yPosition > pageHeight - 40) {
+            pdf.addPage();
+            yPosition = 20;
+          }
 
-        // Section heading
-        pdf.setFont('Raleway', 'bold');
-        const fullHeading = getFullSubheading(section.selectedHeading);
-        const heading = fullHeading.toUpperCase();
-        pdf.text(heading, margin, yPosition);
-        yPosition += lineHeight;
+          // Section heading and content side by side in Raleway
+          pdf.setFont('Raleway', 'bold');
+          const fullHeading = getFullSubheading(section.selectedHeading);
+          const heading = fullHeading.toUpperCase();
+          const headingWidth = pdf.getTextWidth(heading);
+          pdf.text(heading, margin, yPosition);
 
-        // Subsections
-        if (section.subsections && section.subsections.length > 0) {
-          section.subsections.forEach((subsection) => {
-            if (subsection.content && subsection.content.trim()) {
-              // Check for new page
-              if (yPosition > pageHeight - 40) {
-                pdf.addPage();
-                yPosition = 20;
-              }
+          pdf.setFont('Raleway', 'normal');
+          const contentX = margin + headingWidth + 8; // 8 units space between heading and content
+          const splitContentSide = pdf.splitTextToSize(section.content, pdf.internal.pageSize.width - contentX - margin);
 
-              pdf.setFont('Raleway', 'normal');
-              const splitContent = pdf.splitTextToSize(subsection.content, pdf.internal.pageSize.width - 2 * margin);
-              splitContent.forEach((line: string) => {
-                if (yPosition > pageHeight - 20) {
-                  pdf.addPage();
-                  yPosition = 20;
-                }
-                pdf.text(line, margin + 10, yPosition); // Indent subsections
-                yPosition += lineHeight;
-              });
-              yPosition += lineHeight * 0.5;
+          // Print first line of content beside heading, rest below (indented)
+          if (splitContentSide.length > 0) {
+            pdf.text(splitContentSide[0], contentX, yPosition);
+            for (let i = 1; i < splitContentSide.length; i++) {
+              yPosition += lineHeight;
+              pdf.text(splitContentSide[i], contentX, yPosition);
             }
-          });
+          }
+          yPosition += lineHeight * 1.5;
         }
-        yPosition += lineHeight;
       });
     }
 

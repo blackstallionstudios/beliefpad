@@ -71,7 +71,7 @@ export function generateEmailContent(
   
   // Filter connected emotions sections to only include those with content
   const connectedEmotionsWithContent = connectedEmotionsSections?.filter(section => 
-    section.subsections.some(subsection => subsection.content && subsection.content.trim())
+    section.content && section.content.trim()
   ) || [];
   
   // Only add separator and sections if there are sections with content
@@ -94,16 +94,11 @@ export function generateEmailContent(
       bodyLines.push('');
       
       connectedEmotionsWithContent.forEach((section) => {
-        const fullHeading = getFullSubheading(section.selectedHeading);
-        const heading = fullHeading.toUpperCase();
-        bodyLines.push(`${heading}:`);
-        
-        section.subsections.forEach((subsection) => {
-          if (subsection.content && subsection.content.trim()) {
-            bodyLines.push(`  ${subsection.content}`);
-          }
-        });
-        bodyLines.push('');
+        if (section.content && section.content.trim()) {
+          const fullHeading = getFullSubheading(section.selectedHeading);
+          const heading = fullHeading.toUpperCase();
+          bodyLines.push(`${heading}: ${section.content}`);
+        }
       });
     }
   }

@@ -18,16 +18,10 @@ export interface FormSection {
  content: string;
 }
 
-export interface ConnectedEmotionsSubsection {
- id: string;
- heading: string;
- content: string;
-}
-
 export interface ConnectedEmotionsSection {
  id: string;
  selectedHeading: string;
- subsections: ConnectedEmotionsSubsection[];
+ content: string;
 }
 
 export function FormBuilder() {
@@ -49,7 +43,6 @@ export function FormBuilder() {
  const [connectedEmotionsSections, setConnectedEmotionsSections] = useState<ConnectedEmotionsSection[]>([]);
  const [selectedConnectedEmotionsHeading, setSelectedConnectedEmotionsHeading] = useState("");
  const [activeConnectedEmotionsSection, setActiveConnectedEmotionsSection] = useState<string | null>(null);
- const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
  
  const fileInputRef = useRef<HTMLInputElement>(null);
  const textareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
@@ -113,51 +106,27 @@ const addConnectedEmotionsSection = () => {
   const newConnectedEmotionsSection: ConnectedEmotionsSection = {
     id: Date.now().toString(),
     selectedHeading: selectedConnectedEmotionsHeading,
-    subsections: [],
+    content: "",
   };
 
   setConnectedEmotionsSections([...connectedEmotionsSections, newConnectedEmotionsSection]);
   setSelectedConnectedEmotionsHeading("");
 };
 
-const addSubsection = (connectedEmotionsSectionId: string) => {
-  const section = connectedEmotionsSections.find(s => s.id === connectedEmotionsSectionId);
-  if (!section) return;
-
-  const newSubsection: ConnectedEmotionsSubsection = {
-    id: Date.now().toString(),
-    heading: section.selectedHeading,
-    content: "",
-  };
-
-  setConnectedEmotionsSections(connectedEmotionsSections.map(s => 
-    s.id === connectedEmotionsSectionId 
-      ? { ...s, subsections: [...s.subsections, newSubsection] }
-      : s
-  ));
-};
-
-const updateSubsectionContent = (connectedEmotionsSectionId: string, subsectionId: string, content: string) => {
+const updateConnectedEmotionsContent = (connectedEmotionsSectionId: string, content: string) => {
   setConnectedEmotionsSections(connectedEmotionsSections.map(section =>
     section.id === connectedEmotionsSectionId
-      ? {
-          ...section,
-          subsections: section.subsections.map(subsection =>
-            subsection.id === subsectionId
-              ? { ...subsection, content }
-              : subsection
-          )
-        }
+      ? { ...section, content }
       : section
   ));
 };
 
-const handlePasteToSubsection = async (connectedEmotionsSectionId: string, subsectionId: string) => {
+const handlePasteToConnectedEmotionsSection = async (connectedEmotionsSectionId: string) => {
   try {
     const text = await navigator.clipboard.readText();
     if (text) {
-      updateSubsectionContent(connectedEmotionsSectionId, subsectionId, text);
-      setTimeout(() => resizeConnectedEmotionsTextarea(subsectionId), 0);
+      updateConnectedEmotionsContent(connectedEmotionsSectionId, text);
+      setTimeout(() => resizeConnectedEmotionsTextarea(connectedEmotionsSectionId), 0);
     }
   } catch (err) {
     console.error('Failed to read clipboard:', err);
@@ -165,42 +134,23 @@ const handlePasteToSubsection = async (connectedEmotionsSectionId: string, subse
   }
 };
 
-const duplicateSubsection = (connectedEmotionsSectionId: string, subsectionId: string) => {
-  const section = connectedEmotionsSections.find(s => s.id === connectedEmotionsSectionId);
-  if (!section) return;
+const duplicateConnectedEmotionsSection = (connectedEmotionsSectionId: string) => {
+  const sectionToDuplicate = connectedEmotionsSections.find(section => section.id === connectedEmotionsSectionId);
+  if (!sectionToDuplicate) return;
 
-  const subsectionToDuplicate = section.subsections.find(sub => sub.id === subsectionId);
-  if (!subsectionToDuplicate) return;
-
-  const duplicatedSubsection: ConnectedEmotionsSubsection = {
-    ...subsectionToDuplicate,
+  const duplicatedSection: ConnectedEmotionsSection = {
+    ...sectionToDuplicate,
     id: Date.now().toString(),
     content: "",
   };
 
-  const index = section.subsections.findIndex(sub => sub.id === subsectionId);
-  const newSubsections = [
-    ...section.subsections.slice(0, index + 1),
-    duplicatedSubsection,
-    ...section.subsections.slice(index + 1),
+  const index = connectedEmotionsSections.findIndex(section => section.id === connectedEmotionsSectionId);
+  const newSections = [
+    ...connectedEmotionsSections.slice(0, index + 1),
+    duplicatedSection,
+    ...connectedEmotionsSections.slice(index + 1),
   ];
-
-  setConnectedEmotionsSections(connectedEmotionsSections.map(s =>
-    s.id === connectedEmotionsSectionId
-      ? { ...s, subsections: newSubsections }
-      : s
-  ));
-};
-
-const removeSubsection = (connectedEmotionsSectionId: string, subsectionId: string) => {
-  setConnectedEmotionsSections(connectedEmotionsSections.map(section =>
-    section.id === connectedEmotionsSectionId
-      ? {
-          ...section,
-          subsections: section.subsections.filter(subsection => subsection.id !== subsectionId)
-        }
-      : section
-  ));
+  setConnectedEmotionsSections(newSections);
 };
 
 const removeConnectedEmotionsSection = (id: string) => {
@@ -208,11 +158,11 @@ const removeConnectedEmotionsSection = (id: string) => {
 };
 
 // Auto-resize textarea handler for connected emotions
-const handleConnectedEmotionsTextareaInput = (e: React.ChangeEvent<HTMLTextAreaElement>, connectedEmotionsSectionId: string, subsectionId: string) => {
+const handleConnectedEmotionsTextareaInput = (e: React.ChangeEvent<HTMLTextAreaElement>, connectedEmotionsSectionId: string) => {
   const textarea = e.target;
   const content = textarea.value;
   
-  updateSubsectionContent(connectedEmotionsSectionId, subsectionId, content);
+  updateConnectedEmotionsContent(connectedEmotionsSectionId, content);
   
   textarea.style.height = 'auto';
   textarea.style.height = `${textarea.scrollHeight}px`;
@@ -297,7 +247,7 @@ useEffect(() => {
 
    const sectionsWithContent = sections.filter(section => section.content.trim());
    const connectedEmotionsWithContent = connectedEmotionsSections.filter(section => 
-     section.subsections.some(subsection => subsection.content.trim())
+     section.content.trim()
    );
    
    if (sectionsWithContent.length === 0 && connectedEmotionsWithContent.length === 0) {
@@ -669,12 +619,7 @@ useEffect(() => {
                  style={{ flex: 1 }}
                >
                  <option value="">select a heading...</option>
-                 {template.subheadings.filter(heading => 
-                   heading !== "Connected Emotions" && 
-                   heading !== "Body Code Connections" && 
-                   heading !== "Defragmentation of the Subconcious Gap" &&
-                   heading !== "More"
-                 ).map((heading: string) => (
+                 {template.connectedEmotionsSubheadings.map((heading: string) => (
                    <option key={heading} value={heading}>
                      {getFullSubheading(heading)}
                    </option>
@@ -696,97 +641,51 @@ useEffect(() => {
                    {getFullSubheading(section.selectedHeading)}
                  </div>
                  <div className="section-input">
-                   <div className="inline">
-                     <select
-                       value={section.selectedHeading}
-                       onChange={(e) => {
-                         const newHeading = e.target.value;
-                         setConnectedEmotionsSections(connectedEmotionsSections.map(s =>
-                           s.id === section.id ? { ...s, selectedHeading: newHeading } : s
-                         ));
-                       }}
-                       className="select"
-                       style={{ flex: 1 }}
-                     >
-                       <option value="">select a heading...</option>
-                       {template.subheadings.filter(heading => 
-                         heading !== "Connected Emotions" && 
-                         heading !== "Body Code Connections" && 
-                         heading !== "Defragmentation of the Subconcious Gap" &&
-                         heading !== "More"
-                       ).map((heading: string) => (
-                         <option key={heading} value={heading}>
-                           {getFullSubheading(heading)}
-                         </option>
-                       ))}
-                     </select>
-                     <button onClick={() => addSubsection(section.id)} className="btn btn-sm btn-primary">
-                       add subsection
-                     </button>
-                   </div>
-                   {section.subsections.map((subsection) => (
-                     <div key={subsection.id} className="subsection-horizontal">
-                       <div className="subsection-title">
-                         {getFullSubheading(subsection.heading)}
-                       </div>
-                       <div className="subsection-input">
-                         <textarea
-                           ref={(el) => {
-                             if (el) {
-                               connectedEmotionsTextareaRefs.current.set(subsection.id, el);
-                             } else {
-                               connectedEmotionsTextareaRefs.current.delete(subsection.id);
-                             }
-                           }}
-                           value={subsection.content}
-                           onChange={(e) => handleConnectedEmotionsTextareaInput(e, section.id, subsection.id)}
-                           placeholder={`enter statement for ${getFullSubheading(subsection.heading)}...`}
-                           className="input"
-                           style={{ 
-                             width: '100%', 
-                             minHeight: '2.25rem',
-                             maxHeight: '200px',
-                             resize: 'none',
-                             overflow: 'hidden'
-                           }}
-                           rows={1}
-                           onFocus={() => setActiveSubsection(subsection.id)}
-                           onBlur={() => setActiveSubsection(null)}
-                         />
-                       </div>
-                       <div className="subsection-actions-horizontal">
-                         <button
-                           onClick={() => handlePasteToSubsection(section.id, subsection.id)}
-                           className="btn btn-sm btn-success"
-                           type="button"
-                           title="paste from clipboard"
-                         >
-                           ✓
-                         </button>
-                         <button
-                           onClick={() => duplicateSubsection(section.id, subsection.id)}
-                           className="btn btn-sm"
-                           type="button"
-                           title="duplicate subsection"
-                         >
-                           ⧉
-                         </button>
-                         <button
-                           onClick={() => removeSubsection(section.id, subsection.id)}
-                           className="btn btn-sm btn-destructive"
-                           title="remove subsection"
-                         >
-                           ×
-                         </button>
-                       </div>
-                     </div>
-                   ))}
+                   <textarea
+                     ref={(el) => {
+                       if (el) {
+                         connectedEmotionsTextareaRefs.current.set(section.id, el);
+                       } else {
+                         connectedEmotionsTextareaRefs.current.delete(section.id);
+                       }
+                     }}
+                     value={section.content}
+                     onChange={(e) => handleConnectedEmotionsTextareaInput(e, section.id)}
+                     placeholder={`enter statement for ${getFullSubheading(section.selectedHeading)}...`}
+                     className="input"
+                     style={{ 
+                       width: '100%', 
+                       minHeight: '2.25rem',
+                       maxHeight: '200px',
+                       resize: 'none',
+                       overflow: 'hidden'
+                     }}
+                     rows={1}
+                     onFocus={() => setActiveConnectedEmotionsSection(section.id)}
+                     onBlur={() => setActiveConnectedEmotionsSection(null)}
+                   />
                  </div>
                  <div className="section-actions-horizontal">
                    <button
+                     onClick={() => handlePasteToConnectedEmotionsSection(section.id)}
+                     className="btn btn-sm btn-success"
+                     type="button"
+                     title="paste from clipboard"
+                   >
+                     ✓
+                   </button>
+                   <button
+                     onClick={() => duplicateConnectedEmotionsSection(section.id)}
+                     className="btn btn-sm"
+                     type="button"
+                     title="duplicate section"
+                   >
+                     ⧉
+                   </button>
+                   <button
                      onClick={() => removeConnectedEmotionsSection(section.id)}
                      className="btn btn-sm btn-destructive"
-                     title="remove connected emotions section"
+                     title="remove section"
                    >
                      ×
                    </button>
@@ -795,8 +694,6 @@ useEffect(() => {
              </div>
            ))}
          </div>
-
-         
        </div>
 
        {/* Actions */}
@@ -914,7 +811,7 @@ useEffect(() => {
          </div>
        </div>
      </div>
-    
+
      {showSavedForms && (
        <SavedForms
          onLoad={handleLoadForm}

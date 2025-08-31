@@ -21,7 +21,28 @@ export const subheadingMapping = {
     "Connected Emotions": "Connected Emotions",
     "Body Code Connections": "Body Code Connections",
     "Defragmentation of the Subconcious Gap":  "Defragmentation of the Subconcious Gap",
-    "More": "More"
+    "More": "More",
+    // Connected Emotions specific subheadings
+    "Anger": "Anger",
+    "Fear": "Fear",
+    "Sadness": "Sadness",
+    "Joy": "Joy",
+    "Surprise": "Surprise",
+    "Disgust": "Disgust",
+    "Shame": "Shame",
+    "Guilt": "Guilt",
+    "Anxiety": "Anxiety",
+    "Depression": "Depression",
+    "Excitement": "Excitement",
+    "Contentment": "Contentment",
+    "Frustration": "Frustration",
+    "Gratitude": "Gratitude",
+    "Hope": "Hope",
+    "Despair": "Despair",
+    "Love": "Love",
+    "Hate": "Hate",
+    "Confusion": "Confusion",
+    "Clarity": "Clarity"
 };
 
 // Helper function to get full name from abbreviated name
@@ -59,4 +80,27 @@ export const defaultTemplate = {
         "More"        
     ],
     
+    // Connected Emotions specific subheadings (different from main section options)
+    connectedEmotionsSubheadings: [
+        "Anger",
+        "Fear", 
+        "Sadness",
+        "Joy",
+        "Surprise",
+        "Disgust",
+        "Shame",
+        "Guilt",
+        "Anxiety",
+        "Depression",
+        "Excitement",
+        "Contentment",
+        "Frustration",
+        "Gratitude",
+        "Hope",
+        "Despair",
+        "Love",
+        "Hate",
+        "Confusion",
+        "Clarity"
+    ]
 };
