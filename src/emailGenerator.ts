@@ -1,5 +1,6 @@
 import { FormSection, ConnectedEmotionsSection } from "./FormBuilder";
 import { getFullSubheading } from "./template";
+import { logger } from "./lib/logger";
 
 export function generateEmailContent(
   clientName: string,
@@ -10,6 +11,9 @@ export function generateEmailContent(
   sections: FormSection[],
   connectedEmotionsSections?: ConnectedEmotionsSection[]
 ): { subject: string; body: string } {
+  logger.info("EG", "generateEmailContent called");
+  logger.info("EG", `Parameters - clientName: ${clientName}, subject: ${subject}, sections: ${sections.length}, connectedEmotionsSections: ${connectedEmotionsSections?.length || 0}`);
+  
   const emailSubject = `Belief Code Session for ${clientName}`;
   
   // Header explanation text (same as PDF)
@@ -103,8 +107,11 @@ export function generateEmailContent(
     }
   }
   
-  return {
+  const result = {
     subject: emailSubject,
     body: bodyLines.join('%0D%0A')
   };
+  
+  logger.info("EG", `Generated email content - subject: ${result.subject}, body length: ${result.body.length} characters`);
+  return result;
 }

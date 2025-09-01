@@ -4,7 +4,7 @@ import Raleway from './Raleway-Light.ttf';
 import RalewayBold from './Raleway-Bold.ttf';
 import { toast } from "sonner";
 import { getFullSubheading } from "./template";
-console.log("PG: Imports successful. Continuing...")
+import { logger, trackError } from "./lib/logger";
 
 export async function generatePDF(
   clientName: string, 
@@ -15,8 +15,11 @@ export async function generatePDF(
   sections: FormSection[],
   connectedEmotionsSections?: ConnectedEmotionsSection[]
 ) {
+  logger.info("PG", "generatePDF called");
+  logger.info("PG", `Parameters - clientName: ${clientName}, subject: ${subject}, sections: ${sections.length}, connectedEmotionsSections: ${connectedEmotionsSections?.length || 0}`);
+  
   try {
-    console.log("PG: Starting PDF generation...");
+    logger.info("PG", "Starting PDF generation...");
     const pdf = new jsPDF();
 
     console.log("PG: PDF instance created successfully. Continuing...");
@@ -268,9 +271,13 @@ export async function generatePDF(
     }
 
     // Save the PDF
-    pdf.save(`Belief Code for ${clientName} - ${subject}.pdf`);
-    console.log("PG: PDF generation finished. Save function called.");
+    const filename = `Belief Code for ${clientName} - ${subject}.pdf`;
+    logger.info("PG", `Saving PDF with filename: ${filename}`);
+    pdf.save(filename);
+    logger.info("PG", "PDF saved successfully.");
   } catch (error) {
+    logger.error("PG", `Error generating PDF: ${error}`);
+    trackError(error as Error, "PG");
     console.error("PG: Error generating PDF:", error);
   }
 }

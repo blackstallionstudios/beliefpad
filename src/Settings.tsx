@@ -1,4 +1,5 @@
 import { useTheme, Theme, FontFamily } from './ThemeContext';
+import { logger, trackUserAction } from './lib/logger';
 
 interface SettingsProps {
   isOpen: boolean;
@@ -6,15 +7,21 @@ interface SettingsProps {
 }
 
 export function Settings({ isOpen, onClose }: SettingsProps) {
+  logger.info("ST", `Settings component rendering, isOpen: ${isOpen}`);
+  
   const { theme, fontFamily, setTheme, setFontFamily } = useTheme();
 
   if (!isOpen) return null;
 
   const handleThemeChange = (newTheme: Theme) => {
+    logger.info("ST", `Theme change requested: ${newTheme}`);
+    trackUserAction("theme_changed", "ST", { newTheme });
     setTheme(newTheme);
   };
 
   const handleFontChange = (newFont: FontFamily) => {
+    logger.info("ST", `Font change requested: ${newFont}`);
+    trackUserAction("font_changed", "ST", { newFont });
     setFontFamily(newFont);
   };
 

@@ -9,6 +9,7 @@ import { exportAllJSON, clearSavedForms } from "./jsonUtils";
 import { EmailModal } from "./EmailModal";
 import { generateEmailContent } from "./emailGenerator";
 import { useUnsavedChanges } from "./App";
+import { logger, trackUserAction, trackError } from "./lib/logger";
 
 const template = defaultTemplate;
 
@@ -25,35 +26,43 @@ export interface ConnectedEmotionsSection {
 }
 
 export function FormBuilder() {
- const [clientName, setClientName] = useState("");
- const [details, setDetails] = useState("");
- const [sessionType, setSessionType] = useState("");
- const [subject, setSubject] = useState("");
- const [sourceOfBelief, setSourceOfBelief] = useState("");
- const [sections, setSections] = useState<FormSection[]>([]);
- const [selectedSubheading, setSelectedSubheading] = useState("");
- const [showSavedForms, setShowSavedForms] = useState(false);
- const [isClearing, setIsClearing] = useState(false);
- const [isClearingForm, setIsClearingForm] = useState(false);
- const [activeSection, setActiveSection] = useState<string | null>(null);
- const [showEmailModal, setShowEmailModal] = useState(false);
- const [currentStorageKey, setCurrentStorageKey] = useState<string | null>(null);
- 
- // Connected Emotions state
- const [connectedEmotionsSections, setConnectedEmotionsSections] = useState<ConnectedEmotionsSection[]>([]);
- const [selectedConnectedEmotionsHeading, setSelectedConnectedEmotionsHeading] = useState("");
- const [activeConnectedEmotionsSection, setActiveConnectedEmotionsSection] = useState<string | null>(null);
- 
- const fileInputRef = useRef<HTMLInputElement>(null);
- const textareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
- const connectedEmotionsTextareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
+  logger.info("FB", "FormBuilder component initializing");
+  
+  const [clientName, setClientName] = useState("");
+  const [details, setDetails] = useState("");
+  const [sessionType, setSessionType] = useState("");
+  const [subject, setSubject] = useState("");
+  const [sourceOfBelief, setSourceOfBelief] = useState("");
+  const [sections, setSections] = useState<FormSection[]>([]);
+  const [selectedSubheading, setSelectedSubheading] = useState("");
+  const [showSavedForms, setShowSavedForms] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [isClearingForm, setIsClearingForm] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [currentStorageKey, setCurrentStorageKey] = useState<string | null>(null);
+  
+  // Connected Emotions state
+  const [connectedEmotionsSections, setConnectedEmotionsSections] = useState<ConnectedEmotionsSection[]>([]);
+  const [selectedConnectedEmotionsHeading, setSelectedConnectedEmotionsHeading] = useState("");
+  const [activeConnectedEmotionsSection, setActiveConnectedEmotionsSection] = useState<string | null>(null);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
+  const connectedEmotionsTextareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
 
- const { setHasUnsavedChanges } = useUnsavedChanges();
+  const { setHasUnsavedChanges } = useUnsavedChanges();
 
- // Track changes to mark form as having unsaved changes
- useEffect(() => {
-   setHasUnsavedChanges(true);
- }, [clientName, details, sessionType, subject, sourceOfBelief, sections, connectedEmotionsSections, setHasUnsavedChanges]);
+  useEffect(() => {
+    logger.info("FB", "FormBuilder component mounted");
+    logger.info("FB", `Initial state - sections: ${sections.length}, connectedEmotionsSections: ${connectedEmotionsSections.length}`);
+  }, []);
+
+  // Track changes to mark form as having unsaved changes
+  useEffect(() => {
+    logger.info("FB", "Form data changed, marking as unsaved");
+    setHasUnsavedChanges(true);
+  }, [clientName, details, sessionType, subject, sourceOfBelief, sections, connectedEmotionsSections, setHasUnsavedChanges]);
  
  // Helper function to get default content for a section
 const getDefaultContent = (subheading: string): string => {
@@ -81,7 +90,10 @@ const resizeConnectedEmotionsTextarea = (subsectionId: string) => {
 
  // addSection function
 const addSection = () => {
+  logger.info("FB", `addSection called with selectedSubheading: ${selectedSubheading}`);
+  
   if (!selectedSubheading) {
+    logger.warn("FB", "addSection failed - no subheading selected");
     toast.error("please select a subheading");
     return;
   }
@@ -92,13 +104,18 @@ const addSection = () => {
     content: getDefaultContent(selectedSubheading), // Use default content
   };
 
+  logger.info("FB", `Adding new section: ${newSection.subheading} with id: ${newSection.id}`);
+  trackUserAction("section_added", "FB", { sectionType: selectedSubheading, sectionId: newSection.id });
   setSections([...sections, newSection]);
   setSelectedSubheading("");
 };
 
 // Connected Emotions functions
 const addConnectedEmotionsSection = () => {
+  logger.info("FB", `addConnectedEmotionsSection called with selectedHeading: ${selectedConnectedEmotionsHeading}`);
+  
   if (!selectedConnectedEmotionsHeading) {
+    logger.warn("FB", "addConnectedEmotionsSection failed - no heading selected");
     toast.error("please select a heading");
     return;
   }
@@ -109,6 +126,11 @@ const addConnectedEmotionsSection = () => {
     content: "",
   };
 
+  logger.info("FB", `Adding new connected emotions section: ${newConnectedEmotionsSection.selectedHeading} with id: ${newConnectedEmotionsSection.id}`);
+  trackUserAction("connected_emotions_section_added", "FB", { 
+    headingType: selectedConnectedEmotionsHeading, 
+    sectionId: newConnectedEmotionsSection.id 
+  });
   setConnectedEmotionsSections([...connectedEmotionsSections, newConnectedEmotionsSection]);
   setSelectedConnectedEmotionsHeading("");
 };

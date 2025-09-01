@@ -1,5 +1,6 @@
 // jsonGenerator.ts
 import { ConnectedEmotionsSection } from "./FormBuilder";
+import { logger } from "./lib/logger";
 
 export function generateJSON(
   clientName: string,
@@ -11,6 +12,9 @@ export function generateJSON(
   connectedEmotionsSections?: ConnectedEmotionsSection[],
   storageKey?: string // optional
 ) {
+  logger.info("JG", "generateJSON called");
+  logger.info("JG", `Parameters - clientName: ${clientName}, subject: ${subject}, sections: ${sections.length}, connectedEmotionsSections: ${connectedEmotionsSections?.length || 0}`);
+  
   const sessionData = {
     title: clientName,
     subject,
@@ -22,9 +26,15 @@ export function generateJSON(
     timestamp: new Date().toISOString(),
   };
 
+  logger.info("JG", `Generated session data with timestamp: ${sessionData.timestamp}`);
+
   // Save to localStorage only if a storageKey is provided
   if (storageKey) {
+    logger.info("JG", `Saving to localStorage with key: ${storageKey}`);
     localStorage.setItem(storageKey, JSON.stringify(sessionData));
+    logger.info("JG", "Successfully saved to localStorage");
+  } else {
+    logger.info("JG", "No storageKey provided, skipping localStorage save");
   }
 
   return sessionData; // always return JSON object

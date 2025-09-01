@@ -5,43 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session View</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
+        /* Font Imports */
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+        /* CSS Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
-        
+
+        * {
+            margin: 0;
+        }
+
+        body {
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            background-color: #ffffff;
+            color: #111827;
+        }
+
+        /* CSS Variables */
+        :root {
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            --color-white: #ffffff;
+            --color-black: #000000;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-400: #9ca3af;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+            
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
         .session-view {
             max-width: 800px;
             margin: 0 auto;
-            padding: 1rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: var(--spacing-lg);
+            font-family: var(--font-mono);
             line-height: 1.6;
-            color: #333;
+            color: var(--color-gray-900);
         }
         
         .session-view .header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e5e5e5;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--color-gray-200);
         }
         
         .session-view .client-name {
             font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-gray-900);
         }
         
         .session-view .session-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: var(--color-gray-50);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
         }
         
         .session-view .info-item {
@@ -50,55 +98,62 @@
         }
         
         .session-view .info-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #666;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-gray-600);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
+            margin-bottom: var(--spacing-xs);
+            font-family: var(--font-sans);
         }
         
         .session-view .info-value {
-            font-size: 1rem;
-            color: #333;
+            font-size: 0.875rem;
+            color: var(--color-gray-900);
+            font-family: var(--font-mono);
         }
         
         .session-view .section {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border: 1px solid #e5e5e5;
-            border-radius: 6px;
-            background: white;
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            background: var(--color-white);
+            box-shadow: var(--shadow-sm);
         }
         
         .session-view .section-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #ecf0f1;
+            color: var(--color-gray-800);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-gray-100);
+            font-family: var(--font-sans);
         }
         
         .session-view .section-content {
-            font-size: 1rem;
+            font-size: 0.875rem;
             line-height: 1.7;
-            color: #34495e;
+            color: var(--color-gray-700);
             white-space: pre-wrap;
+            font-family: var(--font-mono);
         }
         
         .session-view .connected-emotions-header {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 2rem 0 1rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #3498db;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-gray-200);
+            font-family: var(--font-sans);
         }
         
         .session-view .empty-content {
-            color: #95a5a6;
+            color: var(--color-gray-400);
             font-style: italic;
+            font-family: var(--font-mono);
         }
         
         @media print {
@@ -109,6 +164,8 @@
             .session-view .section {
                 break-inside: avoid;
                 page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--color-gray-300);
             }
         }
     </style>
@@ -119,30 +176,63 @@
     </div>
 
     <script>
+        // Simple logging function for session view
+        function logToVercel(component, message, data) {
+            // Log to console
+            console.log(component, message, data);
+            
+            // Send to Vercel Analytics if available
+            if (typeof window !== 'undefined' && window.va) {
+                try {
+                    window.va('track', 'app_log', {
+                        level: 'info',
+                        component: component,
+                        message: message,
+                        data: data ? JSON.stringify(data) : undefined,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        url: window.location.href
+                    });
+                } catch (error) {
+                    console.error('Failed to send log to Vercel Analytics:', error);
+                }
+            }
+        }
+
         // Function to get URL parameters
         function getUrlParameter(name) {
+            logToVercel("SV", `Getting URL parameter: ${name}`);
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+            const value = urlParams.get(name);
+            logToVercel("SV", `URL parameter ${name}: ${value ? 'found' : 'not found'}`);
+            return value;
         }
 
         // Function to decode base64 data
         function decodeBase64(str) {
+            logToVercel("SV", "Attempting to decode base64 data");
             try {
-                return decodeURIComponent(atob(str).split('').map(function(c) {
+                const decoded = decodeURIComponent(atob(str).split('').map(function(c) {
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
+                logToVercel("SV", "Base64 decode successful");
+                return decoded;
             } catch (e) {
+                logToVercel("SV", `Base64 decode failed: ${e.message}`);
                 return null;
             }
         }
 
         // Function to render the session
         function renderSession(sessionData) {
+            logToVercel("SV", "Rendering session data");
+            logToVercel("SV", `Session data: ${JSON.stringify(sessionData, null, 2)}`);
+            
             const container = document.getElementById('session-container');
             
             let html = `
                 <div class="header">
-                    <div class="client-name">Belief Code Session for ${sessionData.clientName || 'Unknown Client'}</div>
+                    <div class="client-name">beliefpad session for ${sessionData.clientName || 'Unknown Client'}</div>
                 </div>
 
                 <div class="session-info">
@@ -213,31 +303,43 @@
 
         // Load session data from URL parameters
         function loadSession() {
+            logToVercel("SV", "Loading session data from URL parameters");
             const sessionDataParam = getUrlParameter('data');
             if (sessionDataParam) {
+                logToVercel("SV", "Session data parameter found, attempting to decode");
                 const decodedData = decodeBase64(sessionDataParam);
                 if (decodedData) {
                     try {
+                        logToVercel("SV", "Parsing JSON session data");
                         const sessionData = JSON.parse(decodedData);
+                        logToVercel("SV", "JSON parsing successful, rendering session");
                         renderSession(sessionData);
                         document.title = `Session - ${sessionData.clientName || 'Unknown Client'}`;
+                        logToVercel("SV", "Session rendering completed");
                     } catch (e) {
+                        logToVercel("SV", `Error parsing session data: ${e.message}`);
                         console.error('Error parsing session data:', e);
                         document.getElementById('session-container').innerHTML = 
                             '<div class="section"><div class="section-content">Error loading session data.</div></div>';
                     }
                 } else {
+                    logToVercel("SV", "Failed to decode base64 data");
                     document.getElementById('session-container').innerHTML = 
                         '<div class="section"><div class="section-content">Invalid session data.</div></div>';
                 }
             } else {
+                logToVercel("SV", "No session data parameter found in URL");
                 document.getElementById('session-container').innerHTML = 
                     '<div class="section"><div class="section-content">No session data provided.</div></div>';
             }
         }
 
         // Load session when page loads
-        window.addEventListener('load', loadSession);
+        logToVercel("SV", "Setting up page load event listener");
+        window.addEventListener('load', () => {
+            logToVercel("SV", "Page loaded, starting session load process");
+            loadSession();
+        });
     </script>
 </body>
 </html>

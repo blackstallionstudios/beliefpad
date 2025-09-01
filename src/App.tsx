@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "./ThemeContext";
 import { Settings } from "./Settings";
 import { Tutorial, useTutorial } from "./Tutorial";
+import { logger, trackUserAction } from "./lib/logger";
 
 // Context to track unsaved changes across components
 const UnsavedChangesContext = createContext<{
@@ -19,6 +20,8 @@ const UnsavedChangesContext = createContext<{
 export const useUnsavedChanges = () => useContext(UnsavedChangesContext);
 
 export default function App() {
+  logger.info("AP", "App component initializing");
+  
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -27,16 +30,38 @@ export default function App() {
   const { showTutorial, hasSeenTutorial, openTutorial, closeTutorial } = useTutorial();
 
   useEffect(() => {
+    logger.info("AP", "App component mounted");
+    logger.info("AP", `Initial state - showDisclaimer: ${showDisclaimer}, hasUnsavedChanges: ${hasUnsavedChanges}, showSettings: ${showSettings}`);
+  }, []);
+
+  useEffect(() => {
+    logger.info("AP", `hasUnsavedChanges changed to: ${hasUnsavedChanges}`);
+  }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    logger.info("AP", `showSettings changed to: ${showSettings}`);
+  }, [showSettings]);
+
+  useEffect(() => {
+    logger.info("AP", `showDisclaimer changed to: ${showDisclaimer}`);
+  }, [showDisclaimer]);
+
+  useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (hasUnsavedChanges) {
+        logger.warn("AP", "Preventing page unload due to unsaved changes");
         event.preventDefault();
         event.returnValue = '';
         return '';
       }
     };
 
+    logger.info("AP", "Setting up beforeunload event listener");
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      logger.info("AP", "Cleaning up beforeunload event listener");
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, [hasUnsavedChanges]);
 
   return (
@@ -47,16 +72,22 @@ export default function App() {
             <h1 className="header-title">beliefpad</h1>
             <div className="header-actions">
               {hasSeenTutorial && (
-                <button
-                  onClick={openTutorial}
-                  className="btn btn-sm"
-                  title="Show Tutorial"
-                >
-                  ?
-                </button>
+                              <button
+                onClick={() => {
+                  trackUserAction("tutorial_opened", "AP");
+                  openTutorial();
+                }}
+                className="btn btn-sm"
+                title="Show Tutorial"
+              >
+                ?
+              </button>
               )}
               <button
-                onClick={() => setShowSettings(true)}
+                onClick={() => {
+                  trackUserAction("settings_opened", "AP");
+                  setShowSettings(true);
+                }}
                 className="btn btn-sm"
                 title="Settings"
               >
@@ -116,7 +147,10 @@ export default function App() {
                     The developer of this application is not associated with Discover Healing and does not represent or warrant any connection to their organization or methodologies.
                   </p>
                   <button 
-                    onClick={() => setShowDisclaimer(false)}
+                    onClick={() => {
+                      trackUserAction("disclaimer_closed", "AP");
+                      setShowDisclaimer(false);
+                    }}
                     className="disclaimer-close-button"
                     aria-label="Close disclaimer"
                     style={{
@@ -134,7 +168,10 @@ export default function App() {
           
           <Settings 
             isOpen={showSettings} 
-            onClose={() => setShowSettings(false)} 
+            onClose={() => {
+              trackUserAction("settings_closed", "AP");
+              setShowSettings(false);
+            }} 
           />
           
           {/* Tutorial portal - render at root level with high z-index */}
@@ -167,6 +204,8 @@ export default function App() {
 }
 
 function Content() {
+  logger.info("AP", "Content component rendering");
+  
   return (
     <div className="stack">
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>

@@ -410,17 +410,20 @@ body {
   align-items: flex-start;
   gap: var(--spacing-md);
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .section-title {
-  font-weight: 500;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--color-text);
   white-space: nowrap;
   flex-shrink: 0;
   min-width: 120px;
   padding-top: var(--spacing-sm);
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
 }
 
 .section-input {
@@ -439,12 +442,14 @@ body {
 .section-header {
   background-color: var(--color-surface);
   padding: var(--spacing-sm) var(--spacing-md);
-  font-weight: 500;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--color-text);
   border-bottom: 1px solid var(--color-border);
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
 }
 
 .section-content {
@@ -620,12 +625,13 @@ body {
 
 /* Connected Emotions Section Styles */
 .connected-emotions-container {
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   margin: var(--spacing-lg) 0;
   background-color: var(--color-surface);
   transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .connected-emotions-container:hover {
@@ -642,17 +648,20 @@ body {
   gap: var(--spacing-md);
   margin: var(--spacing-sm) 0;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .subsection-title {
-  font-weight: 500;
-  font-size: 11px;
+  font-weight: 600;
+  font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--color-text);
   white-space: nowrap;
   flex-shrink: 0;
   min-width: 100px;
   padding-top: var(--spacing-sm);
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
 }
 
 .subsection-input {
@@ -676,9 +685,11 @@ body {
   border-radius: var(--radius-sm);
   margin-bottom: var(--spacing-md);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-transform: uppercase;
   text-align: center;
+  font-family: var(--font-sans);
+  letter-spacing: 0.5px;
 }
 
 /* Connected Emotions Section Content */
@@ -688,6 +699,7 @@ body {
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Connected Emotions Subsection Styling */

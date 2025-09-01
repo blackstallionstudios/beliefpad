@@ -9,7 +9,8 @@ export default defineConfig({
     emptyOutDir: true,
     minify: 'esbuild', // Fast + small output
     sourcemap: false,  // Optional: remove if you want source maps in prod
-    //treeshake: true,   // Removes unused code
+    // treeshake: true,   // Removes unused code
+    chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
         // Let Vite/Rollup handle safe splitting automatically

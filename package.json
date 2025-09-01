@@ -13,7 +13,7 @@
     "preview:prod": "vite build && serve -s dist",
     "deploy:prod": "npm run build && vercel --prod",
     "deploy:full": "npm run build && vercel --prod",
-    "update-git": "git add . && read -p \"Enter commit message: \" commit_msg && git commit -m \"$commit_msg\" && git push"
+    "update-git": "git add . && read -p \"Enter version (e.g., 1.2.1): \" version && read -p \"Enter commit message: \" commit_msg && git commit -m \"Version $version: $commit_msg\" && git push"  
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
