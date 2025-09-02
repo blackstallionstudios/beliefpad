@@ -82,25 +82,23 @@ export const defaultTemplate = {
     
     // Connected Emotions specific subheadings (different from main section options)
     connectedEmotionsSubheadings: [
-        "Anger",
-        "Fear", 
-        "Sadness",
-        "Joy",
-        "Surprise",
-        "Disgust",
-        "Shame",
-        "Guilt",
-        "Anxiety",
-        "Depression",
-        "Excitement",
-        "Contentment",
-        "Frustration",
-        "Gratitude",
-        "Hope",
-        "Despair",
-        "Love",
-        "Hate",
-        "Confusion",
-        "Clarity"
+        "Prenatal Heart-Wall Emotion",
+        "Preconception Heart-Wall Emotion", 
+        "Inherited Heart-Wall Emotion",
+        "Common Heart-Wall Emotion",
+        "Shared Heart-Wall Emotion",
+        "Absorbed Heart-Wall Emotion",
+        "Prenatal Trapped Emotion",
+        "Preconoception Trapped Emotion",
+        "Inherited Trapped Emotion",
+        "Common Trapped Emotion",
+        "Shared Trapped Emotion",
+        "Absorbed Trapped Emotion",
+        "Prenatal Emotional Compound",
+        "Preconception Emotional Compound",
+        "Inherited Emotional Compound",
+        "Common Emotional Compound",
+        "Shared Emotional Compound",
+        "Absorbed Emotional Compound"
     ]
 };
