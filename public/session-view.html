@@ -232,10 +232,10 @@
             top: 1rem;
             right: 1rem;
             padding: 0.75rem 1rem;
-            background: #7a7a7a;
+            background: #000000;
             color: white;
-            border: none;
-            border-radius: 6px;
+            border: 1px solid white;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.875rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -243,7 +243,9 @@
         }
         
         .share-button:hover {
-            background: #218838;
+            background: #ffffff;
+            color: black;
+            border: 1px solid black;
         }
     </style>
 </head>
@@ -265,11 +267,7 @@
                         <input type="text" id="share-url" readonly class="url-input">
                         <button onclick="copyShareUrl()" class="copy-btn">Copy</button>
                     </div>
-                    <div class="share-options">
-                        <button onclick="shareViaEmail()" class="share-option-btn">Email</button>
-                        <button onclick="shareViaWhatsApp()" class="share-option-btn">WhatsApp</button>
-                        <button onclick="shareViaTelegram()" class="share-option-btn">Telegram</button>
-                    </div>
+                    
                 </div>
             </div>
         </div>

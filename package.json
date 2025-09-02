@@ -9,11 +9,10 @@
     "dev:backend": "convex dev",
     "build": "vite build",
     "lint": "tsc -p convex -noEmit --pretty false && tsc -p . -noEmit --pretty false && convex dev --once && vite build",
-    "deploy": "npm run build && vercel",
-    "preview:prod": "vite build && serve -s dist",
-    "deploy:prod": "npm run build && vercel --prod",
-    "deploy:full": "npm run build && vercel --prod",
-    "update-git": "git add . && read -p \"Enter version (e.g., 1.2.1): \" version && read -p \"Enter commit message: \" commit_msg && git commit -m \"Version $version: $commit_msg\" && git push"  
+    "deploy:prev": "npm run build && vercel",
+    "preview": "vite build && serve -s dist",
+    "deploy": "npm run build && vercel --prod",
+    "github": "git add . && read -p \"Enter version (e.g., 1.2.1): \" version && read -p \"Enter commit message: \" commit_msg && git commit -m \"Version $version: $commit_msg\" && git push"  
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
