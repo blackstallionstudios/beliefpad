@@ -625,7 +625,6 @@ useEffect(() => {
        </div>
 
        {/* Connected Emotions Section */}
-       /*
        <div className="connected-emotions-container">
          <div className="connected-emotions-header">
            Connected Emotions
@@ -718,8 +717,7 @@ useEffect(() => {
            ))}
          </div>
        </div>
-       */
-
+       
        {/* Actions */}
        {(sections.length > 0 || connectedEmotionsSections.length > 0) && (
          <div className="inline-end">
