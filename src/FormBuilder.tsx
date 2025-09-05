@@ -533,6 +533,7 @@ useEffect(() => {
                <option value="Parallel: 3 beliefs in 1">parallel: 3in1</option>
                <option value="Tangled">tangled</option>
                <option value="Split">split</option>
+               <option value="Partial">partial</option>
              </select>
            </div>
          </div>

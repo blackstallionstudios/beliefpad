@@ -12,7 +12,7 @@
     "deploy:prev": "npm run build && vercel",
     "preview": "vite build && serve -s dist",
     "deploy": "npm run build && vercel --prod",
-    "github": "git add . && read -p \"Enter version (e.g., 1.2.1): \" version && read -p \"Enter commit message: \" commit_msg && git commit -m \"Version $version: $commit_msg\" && git push"  
+    "publish_git": "read -p \"Enter commit message: \" commit_msg && git add . && git commit -m \"$commit_msg\" && read -p \"Enter version (e.g., 1.2.1): \" version && npm version $version && git push"  
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
