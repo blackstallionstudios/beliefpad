@@ -225,3 +225,4 @@ function Content() {
     </div>
   );
 }
+console.log("App component rendered");
