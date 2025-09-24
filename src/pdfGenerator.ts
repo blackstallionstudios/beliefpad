@@ -183,40 +183,7 @@ export async function generatePDF(
 
     console.log("PG: Separator rendered successfully. Continuing...");
 
-    // Add regular sections
-    pdf.setFontSize(12);
-    if (sections && sections.length > 0) {
-      sections.forEach((section, index) => {
-        // Check for new page
-        if (yPosition > pageHeight - 40) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-
-        // Section heading and content side by side in Raleway
-        pdf.setFont('Raleway', 'bold');
-        const fullHeading = getFullSubheading(section.subheading);
-        const heading = fullHeading.toUpperCase();
-        const headingWidth = pdf.getTextWidth(heading);
-        pdf.text(heading, margin, yPosition);
-
-        pdf.setFont('Raleway', 'normal');
-        const contentX = margin + headingWidth + 8; // 8 units space between heading and content
-        const splitContentSide = pdf.splitTextToSize(section.content, pdf.internal.pageSize.width - contentX - margin);
-
-        // Print first line of content beside heading, rest below (indented)
-        if (splitContentSide.length > 0) {
-          pdf.text(splitContentSide[0], contentX, yPosition);
-          for (let i = 1; i < splitContentSide.length; i++) {
-            yPosition += lineHeight;
-            pdf.text(splitContentSide[i], contentX, yPosition);
-          }
-        }
-        yPosition += lineHeight * 1.5;
-      });
-    }
-
-    // Add Connected Emotions sections
+    // Add Connected Emotions sections BEFORE regular sections
     if (connectedEmotionsSections && connectedEmotionsSections.length > 0) {
       // Add Connected Emotions header
       if (yPosition > pageHeight - 40) {
@@ -260,6 +227,47 @@ export async function generatePDF(
           }
           yPosition += lineHeight * 1.5;
         }
+      });
+    }
+
+    // Add regular sections AFTER Connected Emotions
+    // Divider between Connected Emotions and other sections
+    if ((connectedEmotionsSections && connectedEmotionsSections.length > 0) && (sections && sections.length > 0)) {
+      if (yPosition > pageHeight - 20) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+      pdf.setLineWidth(0.5);
+      pdf.line(margin, yPosition, pdf.internal.pageSize.width - margin, yPosition);
+      yPosition += lineHeight * 2;
+    }
+
+    pdf.setFontSize(12);
+    if (sections && sections.length > 0) {
+      sections.forEach((section, index) => {
+        if (yPosition > pageHeight - 40) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+
+        pdf.setFont('Raleway', 'bold');
+        const fullHeading = getFullSubheading(section.subheading);
+        const heading = fullHeading.toUpperCase();
+        const headingWidth = pdf.getTextWidth(heading);
+        pdf.text(heading, margin, yPosition);
+
+        pdf.setFont('Raleway', 'normal');
+        const contentX = margin + headingWidth + 8;
+        const splitContentSide = pdf.splitTextToSize(section.content, pdf.internal.pageSize.width - contentX - margin);
+
+        if (splitContentSide.length > 0) {
+          pdf.text(splitContentSide[0], contentX, yPosition);
+          for (let i = 1; i < splitContentSide.length; i++) {
+            yPosition += lineHeight;
+            pdf.text(splitContentSide[i], contentX, yPosition);
+          }
+        }
+        yPosition += lineHeight * 1.5;
       });
     }
 

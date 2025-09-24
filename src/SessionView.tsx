@@ -161,12 +161,13 @@ export function SessionView({
         </div>
       )}
 
-      {sections.length > 0 && (
+      {connectedEmotionsSections.length > 0 && (
         <>
-          {sections.map((section) => (
+          <div className="connected-emotions-header">Connected Emotions</div>
+          {connectedEmotionsSections.map((section) => (
             <div key={section.id} className="section">
               <div className="section-title">
-                {getFullSubheading(section.subheading)}
+                {getFullSubheading(section.selectedHeading)}
               </div>
               <div className="section-content">
                 {section.content || <span className="empty-content">No content</span>}
@@ -176,13 +177,15 @@ export function SessionView({
         </>
       )}
 
-      {connectedEmotionsSections.length > 0 && (
+      {sections.length > 0 && (
         <>
-          <div className="connected-emotions-header">Connected Emotions</div>
-          {connectedEmotionsSections.map((section) => (
+          {connectedEmotionsSections.length > 0 && (
+            <div style={{ borderTop: '1px solid #e5e5e5', margin: '1rem 0' }}></div>
+          )}
+          {sections.map((section) => (
             <div key={section.id} className="section">
               <div className="section-title">
-                {getFullSubheading(section.selectedHeading)}
+                {getFullSubheading(section.subheading)}
               </div>
               <div className="section-content">
                 {section.content || <span className="empty-content">No content</span>}

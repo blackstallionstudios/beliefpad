@@ -260,11 +260,12 @@
                 `;
             }
 
-            if (sessionData.sections && sessionData.sections.length > 0) {
-                sessionData.sections.forEach(section => {
+            if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
+                html += `<div class="connected-emotions-header">Connected Emotions</div>`;
+                sessionData.connectedEmotionsSections.forEach(section => {
                     html += `
                         <div class="section">
-                            <div class="section-title">${section.subheading}</div>
+                            <div class="section-title">${section.selectedHeading}</div>
                             <div class="section-content">
                                 ${section.content || '<span class="empty-content">No content</span>'}
                             </div>
@@ -273,12 +274,14 @@
                 });
             }
 
-            if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
-                html += `<div class="connected-emotions-header">Connected Emotions</div>`;
-                sessionData.connectedEmotionsSections.forEach(section => {
+            if (sessionData.sections && sessionData.sections.length > 0) {
+                if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
+                    html += `<div style=\"border-top: 1px solid var(--color-gray-200); margin: var(--spacing-lg) 0;\"></div>`;
+                }
+                sessionData.sections.forEach(section => {
                     html += `
                         <div class="section">
-                            <div class="section-title">${section.selectedHeading}</div>
+                            <div class="section-title">${section.subheading}</div>
                             <div class="section-content">
                                 ${section.content || '<span class="empty-content">No content</span>'}
                             </div>

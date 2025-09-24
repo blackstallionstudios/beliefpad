@@ -83,15 +83,7 @@ export function generateEmailContent(
     bodyLines.push('────────────────────────────────────────────────────────────────────────────────────────');
     bodyLines.push('');
     
-    // Add regular sections with content
-    sectionsWithContent.forEach((section) => {
-      const fullHeading = getFullSubheading(section.subheading);
-      const heading = fullHeading.toUpperCase();
-      
-      bodyLines.push(`${heading}: ${section.content}`);
-    });
-    
-    // Add Connected Emotions sections
+    // Add Connected Emotions sections FIRST
     if (connectedEmotionsWithContent.length > 0) {
       bodyLines.push('');
       bodyLines.push('CONNECTED EMOTIONS:');
@@ -105,6 +97,21 @@ export function generateEmailContent(
         }
       });
     }
+
+    // Divider between groups if both are present
+    if (connectedEmotionsWithContent.length > 0 && sectionsWithContent.length > 0) {
+      bodyLines.push('');
+      bodyLines.push('────────────────────────────────────────────────────────────────────────────────────────');
+      bodyLines.push('');
+    }
+
+    // Add regular sections with content AFTER connected emotions
+    sectionsWithContent.forEach((section) => {
+      const fullHeading = getFullSubheading(section.subheading);
+      const heading = fullHeading.toUpperCase();
+      
+      bodyLines.push(`${heading}: ${section.content}`);
+    });
   }
   
   const result = {
