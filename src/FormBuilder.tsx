@@ -88,6 +88,51 @@ const resizeConnectedEmotionsTextarea = (subsectionId: string) => {
   }
 };
 
+// Returns the empowering/positive opposite subheading for a given abbreviated subheading
+const getOppositeSubheading = (abbrev: string): string | null => {
+  // Normalize to base token (strip trailing version like " 2", " 3")
+  const base = abbrev.replace(/\s+\d+$/, "");
+  switch (base) {
+    case "NP":
+      return "PP"; // Negative Program => Positive Program
+    case "LB":
+      return "EB"; // Limiting Belief => Empowering Belief
+    case "FCB":
+      return "ECB"; // Faulty Core Belief => Empowering Core Belief
+    case "FCI":
+      return "ECI"; // Faulty Core Identity => Empowering Core Identity
+    default:
+      return null;
+  }
+};
+
+// Insert an opposite section immediately after the given section id
+const addOppositeSectionBelow = (afterSectionId: string) => {
+  const current = sections.find(s => s.id === afterSectionId);
+  if (!current) return;
+  const opposite = getOppositeSubheading(current.subheading);
+  if (!opposite) {
+    toast.error("no opposite section available for this subheading");
+    return;
+  }
+
+  const newSection: FormSection = {
+    id: Date.now().toString(),
+    subheading: opposite,
+    content: "",
+  };
+
+  const index = sections.findIndex(s => s.id === afterSectionId);
+  const newSections = [
+    ...sections.slice(0, index + 1),
+    newSection,
+    ...sections.slice(index + 1),
+  ];
+  setSections(newSections);
+  // Defer resize to next tick
+  setTimeout(() => resizeTextarea(newSection.id), 0);
+};
+
  // addSection function
 const addSection = () => {
   logger.info("FB", `addSection called with selectedSubheading: ${selectedSubheading}`);
@@ -694,6 +739,16 @@ useEffect(() => {
               >
                 ✓
               </button>
+              {getOppositeSubheading(section.subheading) && (
+                <button
+                  onClick={() => addOppositeSectionBelow(section.id)}
+                  className="btn btn-sm"
+                  type="button"
+                  title="add opposite section below"
+                >
+                  ↔
+                </button>
+              )}
               <button
                 onClick={() => duplicateSection(section.id)}
                 className="btn btn-sm"

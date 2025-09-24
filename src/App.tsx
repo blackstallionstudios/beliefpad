@@ -168,6 +168,7 @@ export default function App() {
                       <li>Connected Emotions now appears before other sections.</li>
                       <li>Some popups have been restyled.</li>
                       <li>Subheading options are now better grouped for better readability.</li>
+                      <li>There is now a direct option to add an opposite section below a section.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: This changelog will automatically be shown in future updates.
