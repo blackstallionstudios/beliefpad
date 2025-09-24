@@ -1,4 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
+// Import app version from package metadata for versioned first-run/update modal
+// Vite supports JSON imports with resolveJsonModule enabled
+import pkg from "../package.json";
 import { Toaster } from "sonner";
 import { FormBuilder } from "./FormBuilder";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -25,6 +28,7 @@ export default function App() {
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   
   // Tutorial state
   const { showTutorial, hasSeenTutorial, openTutorial, closeTutorial } = useTutorial();
@@ -45,6 +49,22 @@ export default function App() {
   useEffect(() => {
     logger.info("AP", `showDisclaimer changed to: ${showDisclaimer}`);
   }, [showDisclaimer]);
+
+  // Versioned first-run/update modal logic
+  useEffect(() => {
+    try {
+      const appVersion = (pkg as any).version as string | undefined;
+      if (!appVersion) return;
+      const STORAGE_KEY = "beliefpad_seen_version";
+      const seenVersion = localStorage.getItem(STORAGE_KEY);
+      if (seenVersion !== appVersion) {
+        setShowUpdateModal(true);
+        // Defer writing the version until the user closes the modal
+      }
+    } catch (error) {
+      console.error("Failed to check app version for update modal", error);
+    }
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -98,6 +118,77 @@ export default function App() {
           <main className="flex-1" style={{ width: '100%' }}>
             <Content />
           </main>
+          {/* Update Modal - shown once per app version */}
+          {showUpdateModal && (
+            <div style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 2000,
+            }}>
+              <div style={{
+                background: 'white',
+                border: '1px solid var(--color-border)',
+                borderRadius: '8px',
+                width: 'min(560px, 92vw)',
+                maxWidth: '560px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  borderBottom: '1px solid var(--color-border)'
+                }}>
+                  <h3 style={{ margin: 0, fontSize: '16px' }}>What’s new in this update</h3>
+                  <button
+                    onClick={() => {
+                      try {
+                        const appVersion = (pkg as any).version as string | undefined;
+                        if (appVersion) localStorage.setItem("beliefpad_seen_version", appVersion);
+                      } catch {}
+                      setShowUpdateModal(false);
+                    }}
+                    className="btn btn-sm"
+                    aria-label="Close update info"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div style={{ padding: '16px' }}>
+                  <div style={{ fontSize: '14px', lineHeight: 1.6 }}>
+                    <p style={{ marginTop: 0 }}>
+                      You’re using the latest version of beliefpad.
+                    </p>
+                    <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0' }}>
+                      <li>Connected Emotions now appears before other sections.</li>
+                    </ul>
+                    <p style={{ color: '#6b7280', fontSize: '12px' }}>
+                      Tip: You can reopen this changelog in future updates automatically.
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                    <button
+                      onClick={() => {
+                        try {
+                          const appVersion = (pkg as any).version as string | undefined;
+                          if (appVersion) localStorage.setItem("beliefpad_seen_version", appVersion);
+                        } catch {}
+                        setShowUpdateModal(false);
+                      }}
+                      className="btn btn-primary"
+                    >
+                      Got it
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Floating Feedback Button */}
           <a

@@ -12,7 +12,8 @@
     "deploy:prev": "npm run build && vercel",
     "preview": "vite build && serve -s dist",
     "deploy": "npm run build && vercel --prod",
-    "publish_git": "read -p \"Enter commit message: \" commit_msg && git add . && git commit -m \"$commit_msg\" && read -p \"Enter version (e.g., 1.2.1): \" version && npm version $version && git push"
+    "publish_git": "read -p \"Enter commit message: \" commit_msg && git add . && git commit -m \"$commit_msg\" && read -p \"Enter version (e.g., 1.2.1): \" version && npm version $version && git push",
+    "full_publish": "npm run publish_git && npm run deploy"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
