@@ -167,6 +167,7 @@ export default function App() {
                     <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0' }}>
                       <li>Connected Emotions now appears before other sections.</li>
                       <li>Some popups have been restyled.</li>
+                      <li>Subheading options are now better grouped for better readability.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: This changelog will automatically be shown in future updates.

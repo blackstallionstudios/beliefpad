@@ -551,19 +551,37 @@ useEffect(() => {
            <div className="field">
              <label className="field-label">add connected emotions section</label>
              <div className="inline">
-               <select
-                 value={selectedConnectedEmotionsHeading}
-                 onChange={(e) => setSelectedConnectedEmotionsHeading(e.target.value)}
-                 className="select"
-                 style={{ flex: 1 }}
-               >
-                 <option value="">select a heading...</option>
-                 {template.connectedEmotionsSubheadings.map((heading: string) => (
-                   <option key={heading} value={heading}>
-                     {getFullSubheading(heading)}
-                   </option>
-                 ))}
-               </select>
+              <select
+                value={selectedConnectedEmotionsHeading}
+                onChange={(e) => setSelectedConnectedEmotionsHeading(e.target.value)}
+                className="select"
+                style={{ flex: 1 }}
+              >
+                <option value="">select a heading...</option>
+                <optgroup label="Heart-Wall Emotion (HWE)">
+                  {template.connectedEmotionsSubheadings
+                    .filter((h: string) => h.endsWith("HWE"))
+                    .map((heading: string) => (
+                      <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                    ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Trapped Emotion (TE)">
+                  {template.connectedEmotionsSubheadings
+                    .filter((h: string) => h.endsWith("TE"))
+                    .map((heading: string) => (
+                      <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                    ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Emotional Compound (EC)">
+                  {template.connectedEmotionsSubheadings
+                    .filter((h: string) => h.endsWith("EC"))
+                    .map((heading: string) => (
+                      <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                    ))}
+                </optgroup>
+              </select>
                <button onClick={addConnectedEmotionsSection} className="btn btn-primary">
                  add section
                </button>
@@ -708,11 +726,47 @@ useEffect(() => {
               style={{ flex: 1 }}
             >
               <option value="">select a subheading...</option>
-              {template.subheadings.map((heading) => (
-                <option key={heading} value={heading}>
-                  {getFullSubheading(heading)}
-                </option>
-              ))}
+              <optgroup label="Version 1">
+                {["NP","LB","FCB","FCI"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="Version 2">
+                {["NP 2","LB 2","FCB 2","FCI 2"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="Version 3">
+                {["NP 3","LB 3","FCB 3","FCI 3"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="Empowering (Replacements)">
+                {["PP","EB","ECB","ECI"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="Connections">
+                {["Connected Emotions","Body Code Connections"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="Defragmentation">
+                {["Defragmentation of the Subconcious Gap"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
+              <option value="" disabled>──────────</option>
+              <optgroup label="More">
+                {["More"].map((heading) => (
+                  <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                ))}
+              </optgroup>
             </select>
             <button onClick={addSection} className="btn btn-primary">
               add
