@@ -169,7 +169,7 @@ export default function App() {
                       <li>Some popups have been restyled.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
-                      Tip: You can reopen this changelog in future updates automatically.
+                      Tip: This changelog will automatically be shown in future updates.
                     </p>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
