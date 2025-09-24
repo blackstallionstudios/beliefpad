@@ -46,6 +46,7 @@ const TUTORIAL_STEPS = [
     content: (
       <div>
         <p>Firstly, let's go over the interface of this app. In the top right corner, you can find customization options (font and dark/light themes) by clicking on the gear icon. Whatever options you pick, they'll be saved.</p>
+        <p className="mt-3">You can also find information about the app, such as version number and repository link, by clicking the info icon in the top right corner.</p>
         <p className="mt-3">In the main part of the page, you'll find input spaces for the following information: client name, source of belief, subject of session, details and session type. Below that, a dropdown allows you to choose and add sections - one for each statement.</p>
       </div>
     ),
@@ -62,8 +63,10 @@ const TUTORIAL_STEPS = [
           <li>Paste copied statements into the section</li>
           <li>Duplicate the section - add another section immediately afterwards with the same title (i.e., "NP")</li>
           <li>Delete the section</li>
+          <li>Add an opposite section below the section</li>
         </ul>
         <p className="mt-3">Try using these buttons to get used to them.</p>
+        <p className="mt-3">Try reordering the sections by dragging and dropping them.  The action areas are located at either end of the section.</p>
         <p className="mt-3" style={{ fontWeight: '600', color: '#d97706' }}>NOTE: The first time you click the "paste" button, a pop-up will appear, asking for permission to access the clipboard. Click "allow".</p>
       </div>
     ),

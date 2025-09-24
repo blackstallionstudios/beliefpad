@@ -29,6 +29,7 @@ export default function App() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   
   // Tutorial state
   const { showTutorial, hasSeenTutorial, openTutorial, closeTutorial } = useTutorial();
@@ -105,6 +106,17 @@ export default function App() {
               )}
               <button
                 onClick={() => {
+                  trackUserAction("info_opened", "AP");
+                  setShowInfoModal(true);
+                }}
+                className="btn btn-sm"
+                title="Information"
+                aria-label="Information"
+              >
+                i
+              </button>
+              <button
+                onClick={() => {
                   trackUserAction("settings_opened", "AP");
                   setShowSettings(true);
                 }}
@@ -161,15 +173,17 @@ export default function App() {
                 </div>
                 <div style={{ padding: '16px' }}>
                   <div style={{ fontSize: '14px', backgroundColor: 'var(--color-card-bg)', lineHeight: 1.6 }}>
-                    <p style={{ marginTop: 0 }}>
+                    <p style={{ marginTop: 0, color: 'var(--color-text)' }}>
                       You’re using the latest version of beliefpad.
                     </p>
-                    <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0' }}>
+                    <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0', color: 'var(--color-text)' }}>
                       <li>Connected Emotions now appears before other sections.</li>
                       <li>Some popups have been restyled.</li>
                       <li>Subheading options are now better grouped for better readability.</li>
                       <li>There is now a direct option to add an opposite section below a section.</li>
                       <li>Sections can now be reordered using drag-and-drop.</li>
+                      <li>Information about the app can now be found in the info section in the header.</li>
+                      <li>The tutorial has been updated to reflect these changes. Feel free to refer to it - the question mark icon in the header - as you get to know the new features.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: This changelog will automatically be shown in future updates.
@@ -187,6 +201,94 @@ export default function App() {
                       className="btn btn-primary"
                     >
                       Got it
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Info Modal - shows app version and repo link */}
+          {showInfoModal && (
+            <div
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 2000,
+              }}
+            >
+              <div
+                style={{
+                  background: 'var(--color-card-bg)',
+                  color: 'var(--color-text)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '8px',
+                  width: 'min(520px, 92vw)',
+                  maxWidth: '520px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 16px',
+                    borderBottom: '1px solid var(--color-border)',
+                    background: 'var(--color-surface)',
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: 0,
+                      fontSize: '16px',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    About beliefpad
+                  </h3>
+                  <button
+                    onClick={() => setShowInfoModal(false)}
+                    className="btn btn-sm"
+                    aria-label="Close info"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div style={{ padding: '16px' }}>
+                  <div style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text)' }}>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                      Version:{' '}
+                      <strong style={{ color: 'var(--color-accent)' }}>
+                        {(pkg as any).version ?? 'unknown'}
+                      </strong>
+                    </p>
+                    <p style={{ margin: '0 0 12px 0' }}>
+                      Repository:{' '}
+                      <a
+                        href="https://github.com/blackstallionstudios/beliefpad.git"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: 'var(--color-accent)',
+                          textDecoration: 'underline',
+                          wordBreak: 'break-all',
+                        }}
+                      >
+                        github.com/blackstallionstudios/beliefpad
+                      </a>
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                    <button
+                      onClick={() => setShowInfoModal(false)}
+                      className="btn btn-primary"
+                    >
+                      Close
                     </button>
                   </div>
                 </div>
