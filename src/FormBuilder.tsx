@@ -51,6 +51,10 @@ export function FormBuilder() {
   const textareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
   const connectedEmotionsTextareaRefs = useRef<Map<string, HTMLTextAreaElement>>(new Map());
 
+  // Drag-and-drop state for sections (not used for Connected Emotions)
+  const dragStartIndexRef = useRef<number | null>(null);
+  const dragBlockLengthRef = useRef<number>(1);
+
   const { setHasUnsavedChanges } = useUnsavedChanges();
 
   useEffect(() => {
@@ -131,6 +135,73 @@ const addOppositeSectionBelow = (afterSectionId: string) => {
   setSections(newSections);
   // Defer resize to next tick
   setTimeout(() => resizeTextarea(newSection.id), 0);
+};
+
+// DnD utilities
+const isPairParentAt = (index: number): boolean => {
+  if (index < 0 || index >= sections.length - 1) return false;
+  const current = sections[index];
+  const next = sections[index + 1];
+  return getOppositeSubheading(current.subheading) === next.subheading;
+};
+
+const isPairChildAt = (index: number): boolean => {
+  if (index <= 0 || index >= sections.length) return false;
+  const prev = sections[index - 1];
+  const current = sections[index];
+  return getOppositeSubheading(prev.subheading) === current.subheading;
+};
+
+const normalizeBlockStart = (index: number): { start: number; length: number } => {
+  if (isPairChildAt(index)) return { start: index - 1, length: 2 };
+  if (isPairParentAt(index)) return { start: index, length: 2 };
+  return { start: index, length: 1 };
+};
+
+const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+  const { start, length } = normalizeBlockStart(index);
+  dragStartIndexRef.current = start;
+  dragBlockLengthRef.current = length;
+  try {
+    // Setting data is required for some browsers to initiate a drag
+    e.dataTransfer.setData('text/plain', 'move');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.dropEffect = 'move';
+  } catch {}
+};
+
+const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  e.preventDefault();
+};
+
+const handleDrop = (overIndex: number) => {
+  if (dragStartIndexRef.current === null) return;
+  const { start: fromStart, length } = {
+    start: dragStartIndexRef.current,
+    length: dragBlockLengthRef.current,
+  };
+
+  const { start: toStart } = normalizeBlockStart(overIndex);
+
+  if (fromStart === toStart || (fromStart === toStart - 1 && length === 2)) {
+    // No movement if dropping on the same block area
+    dragStartIndexRef.current = null;
+    return;
+  }
+
+  const list = sections.slice();
+  const moving = list.splice(fromStart, length);
+  let insertIndex = toStart;
+  if (toStart > fromStart) insertIndex = toStart - length;
+  list.splice(insertIndex, 0, ...moving);
+
+  const newSections = list;
+  setSections(newSections);
+  dragStartIndexRef.current = null;
+};
+
+const handleDragEnd = () => {
+  dragStartIndexRef.current = null;
 };
 
  // addSection function
@@ -700,8 +771,17 @@ useEffect(() => {
        
       {/* Form Sections */}
       <div className="list">
-        {sections.map((section) => (
-          <div key={section.id} className="section-horizontal">
+        {sections.map((section, index) => (
+          <div
+            key={section.id}
+            className="section-horizontal"
+            draggable={!isPairChildAt(index)}
+            onDragStart={(e) => handleDragStart(e, index)}
+            onDragOver={handleDragOver}
+            onDrop={() => handleDrop(index)}
+            onDragEnd={handleDragEnd}
+            style={{ cursor: !isPairChildAt(index) ? 'grab' : 'default' }}
+          >
             <div className="section-title">
               {getFullSubheading(section.subheading)}
             </div>

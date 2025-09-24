@@ -169,6 +169,7 @@ export default function App() {
                       <li>Some popups have been restyled.</li>
                       <li>Subheading options are now better grouped for better readability.</li>
                       <li>There is now a direct option to add an opposite section below a section.</li>
+                      <li>Sections can now be reordered using drag-and-drop.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: This changelog will automatically be shown in future updates.
