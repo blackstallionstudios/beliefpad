@@ -160,14 +160,14 @@ export default function App() {
                   </button>
                 </div>
                 <div style={{ padding: '16px' }}>
-                  <div style={{ fontSize: '14px', lineHeight: 1.6 }}>
+                  <div style={{ fontSize: '14px', backgroundColor: 'var(--color-card-bg)', lineHeight: 1.6 }}>
                     <p style={{ marginTop: 0 }}>
                       You’re using the latest version of beliefpad.
                     </p>
                     <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0' }}>
                       <li>Connected Emotions now appears before other sections.</li>
                     </ul>
-                    <p style={{ color: '#6b7280', fontSize: '12px' }}>
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: You can reopen this changelog in future updates automatically.
                     </p>
                   </div>
