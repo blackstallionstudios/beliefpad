@@ -183,7 +183,7 @@ export default function App() {
                       <li>There is now a direct option to add an opposite section below a section.</li>
                       <li>Sections can now be reordered using drag-and-drop.</li>
                       <li>Information about the app can now be found in the info section in the header.</li>
-                      <li>Choosing the 'inherited from' option now offers a custom text box option for more customizability.</li>
+                      <li>Choosing the 'inherited from' option in the source of belief menu now offers a custom text box option for more customizability.</li>
                       <li>The tutorial has been updated to reflect these changes. Feel free to refer to it - the question mark icon in the header - as you get to know the new features.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
