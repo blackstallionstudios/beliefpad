@@ -17,20 +17,20 @@ const UnsavedChangesContext = createContext<{
   setHasUnsavedChanges: (value: boolean) => void;
 }>({
   hasUnsavedChanges: false,
-  setHasUnsavedChanges: () => {}
+  setHasUnsavedChanges: () => { }
 });
 
 export const useUnsavedChanges = () => useContext(UnsavedChangesContext);
 
 export default function App() {
   logger.info("AP", "App component initializing");
-  
+
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  
+
   // Tutorial state
   const { showTutorial, hasSeenTutorial, openTutorial, closeTutorial } = useTutorial();
 
@@ -93,16 +93,16 @@ export default function App() {
             <h1 className="header-title">beliefpad</h1>
             <div className="header-actions">
               {hasSeenTutorial && (
-                              <button
-                onClick={() => {
-                  trackUserAction("tutorial_opened", "AP");
-                  openTutorial();
-                }}
-                className="btn btn-sm"
-                title="Show Tutorial"
-              >
-                ?
-              </button>
+                <button
+                  onClick={() => {
+                    trackUserAction("tutorial_opened", "AP");
+                    openTutorial();
+                  }}
+                  className="btn btn-sm"
+                  title="Show Tutorial"
+                >
+                  ?
+                </button>
               )}
               <button
                 onClick={() => {
@@ -162,7 +162,7 @@ export default function App() {
                       try {
                         const appVersion = (pkg as any).version as string | undefined;
                         if (appVersion) localStorage.setItem("beliefpad_seen_version", appVersion);
-                      } catch {}
+                      } catch { }
                       setShowUpdateModal(false);
                     }}
                     className="btn btn-sm"
@@ -183,6 +183,7 @@ export default function App() {
                       <li>There is now a direct option to add an opposite section below a section.</li>
                       <li>Sections can now be reordered using drag-and-drop.</li>
                       <li>Information about the app can now be found in the info section in the header.</li>
+                      <li>Choosing the 'inherited from' option now offers a custom text box option for more customizability.</li>
                       <li>The tutorial has been updated to reflect these changes. Feel free to refer to it - the question mark icon in the header - as you get to know the new features.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
@@ -195,7 +196,7 @@ export default function App() {
                         try {
                           const appVersion = (pkg as any).version as string | undefined;
                           if (appVersion) localStorage.setItem("beliefpad_seen_version", appVersion);
-                        } catch {}
+                        } catch { }
                         setShowUpdateModal(false);
                       }}
                       className="btn btn-primary"
@@ -343,7 +344,7 @@ export default function App() {
                     <strong>Disclaimer:</strong> This application is an independent, third-party tool created for transcription and note-taking purposes. It is not affiliated with, endorsed by, sponsored by, or connected to Discover Healing or any of their proprietary methods, trademarks, or services. All trademarks, service marks, and trade names referenced in this application are the property of their respective owners. This application is provided as a general transcription tool and does not constitute professional advice or training in any healing modality.
                     The developer of this application is not associated with Discover Healing and does not represent or warrant any connection to their organization or methodologies.
                   </p>
-                  <button 
+                  <button
                     onClick={() => {
                       trackUserAction("disclaimer_closed", "AP");
                       setShowDisclaimer(false);
@@ -362,15 +363,15 @@ export default function App() {
               </div>
             </footer>
           )}
-          
-          <Settings 
-            isOpen={showSettings} 
+
+          <Settings
+            isOpen={showSettings}
             onClose={() => {
               trackUserAction("settings_closed", "AP");
               setShowSettings(false);
-            }} 
+            }}
           />
-          
+
           {/* Tutorial portal - render at root level with high z-index */}
           {showTutorial && (
             <Tutorial
@@ -379,7 +380,7 @@ export default function App() {
             />
           )}
 
-          <Toaster 
+          <Toaster
             position="bottom-right"
             toastOptions={{
               style: {
@@ -402,13 +403,13 @@ export default function App() {
 
 function Content() {
   logger.info("AP", "Content component rendering");
-  
+
   return (
     <div className="stack">
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: 'normal', 
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'normal',
           marginBottom: '0.5rem',
           fontFamily: 'var(--font-family)'
         }}>

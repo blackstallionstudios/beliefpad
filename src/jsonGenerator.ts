@@ -10,17 +10,19 @@ export function generateJSON(
   sourceOfBelief: string,
   sections: { id: string; subheading: string; content: string }[],
   connectedEmotionsSections?: ConnectedEmotionsSection[],
-  storageKey?: string // optional
+  storageKey?: string, // optional
+  inheritedFromValue?: string // Add this parameter
 ) {
   logger.info("JG", "generateJSON called");
   logger.info("JG", `Parameters - clientName: ${clientName}, subject: ${subject}, sections: ${sections.length}, connectedEmotionsSections: ${connectedEmotionsSections?.length || 0}`);
-  
+
   const sessionData = {
     title: clientName,
     subject,
     details,
     sessionType,
     sourceOfBelief,
+    inheritedFromValue: inheritedFromValue || "", // Store the inheritedFromValue
     sections,
     connectedEmotionsSections: connectedEmotionsSections || [],
     timestamp: new Date().toISOString(),
