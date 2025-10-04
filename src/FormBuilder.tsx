@@ -40,6 +40,8 @@ export function FormBuilder() {
   const [isClearing, setIsClearing] = useState(false);
   const [isClearingForm, setIsClearingForm] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [draggedBlock, setDraggedBlock] = useState<{start: number, length: number} | null>(null);
+const [dropTarget, setDropTarget] = useState<number | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [currentStorageKey, setCurrentStorageKey] = useState<string | null>(null);
 
@@ -161,48 +163,52 @@ export function FormBuilder() {
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     const { start, length } = normalizeBlockStart(index);
-    dragStartIndexRef.current = start;
-    dragBlockLengthRef.current = length;
-    try {
-      // Setting data is required for some browsers to initiate a drag
-      e.dataTransfer.setData('text/plain', 'move');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.dropEffect = 'move';
-    } catch { }
+    setDraggedBlock({ start, length });
+    
+    e.currentTarget.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'move');
   };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
+    if (!draggedBlock) return;
+    
+    const { start: targetStart } = normalizeBlockStart(index);
+    setDropTarget(targetStart);
   };
-
+  
+  const handleDragLeave = () => {
+    setDropTarget(null);
+  };
+  
   const handleDrop = (overIndex: number) => {
-    if (dragStartIndexRef.current === null) return;
-    const { start: fromStart, length } = {
-      start: dragStartIndexRef.current,
-      length: dragBlockLengthRef.current,
-    };
-
+    if (!draggedBlock) return;
+    
+    const { start: fromStart, length } = draggedBlock;
     const { start: toStart } = normalizeBlockStart(overIndex);
-
+  
     if (fromStart === toStart || (fromStart === toStart - 1 && length === 2)) {
-      // No movement if dropping on the same block area
-      dragStartIndexRef.current = null;
+      setDraggedBlock(null);
+      setDropTarget(null);
       return;
     }
-
+  
     const list = sections.slice();
     const moving = list.splice(fromStart, length);
     let insertIndex = toStart;
     if (toStart > fromStart) insertIndex = toStart - length;
     list.splice(insertIndex, 0, ...moving);
-
-    const newSections = list;
-    setSections(newSections);
-    dragStartIndexRef.current = null;
+  
+    setSections(list);
+    setDraggedBlock(null);
+    setDropTarget(null);
   };
-
-  const handleDragEnd = () => {
-    dragStartIndexRef.current = null;
+  
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.style.opacity = '1';
+    setDraggedBlock(null);
+    setDropTarget(null);
   };
 
   // addSection function
@@ -762,17 +768,54 @@ export function FormBuilder() {
 
         {/* Form Sections */}
         <div className="list">
-          {sections.map((section, index) => (
-            <div
-              key={section.id}
-              className="section-horizontal"
-              draggable={!isPairChildAt(index)}
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(index)}
-              onDragEnd={handleDragEnd}
-              style={{ cursor: !isPairChildAt(index) ? 'grab' : 'default' }}
-            >
+        {sections.map((section, index) => {
+  const isPairChild = isPairChildAt(index);
+  const isPairParent = isPairParentAt(index);
+  const isDragging = draggedBlock?.start === index || 
+                     (draggedBlock?.length === 2 && draggedBlock.start === index - 1);
+  const isDropZone = dropTarget === index;
+  
+  return (
+    <div key={section.id}>
+      {isDropZone && !isDragging && (
+        <div style={{
+          height: '4px',
+          backgroundColor: 'var(--color-accent)',
+          borderRadius: '2px',
+          margin: '4px 0',
+          transition: 'all 0.2s ease'
+        }} />
+      )}
+      
+      <div
+        className="section-horizontal"
+        draggable={!isPairChild}
+        onDragStart={(e) => handleDragStart(e, index)}
+        onDragOver={(e) => handleDragOver(e, index)}
+        onDragLeave={handleDragLeave}
+        onDrop={() => handleDrop(index)}
+        onDragEnd={handleDragEnd}
+        style={{
+          cursor: !isPairChild ? 'grab' : 'default',
+          opacity: isDragging ? 0.5 : 1,
+          transition: 'opacity 0.2s ease',
+          borderLeft: (isPairChild || isPairParent) ? '3px solid var(--color-accent)' : undefined,
+          marginLeft: isPairChild ? '12px' : undefined,
+          position: 'relative'
+        }}
+      >
+        {isPairParent && (
+          <div style={{
+            position: 'absolute',
+            left: '-8px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            fontSize: '10px',
+            color: 'var(--color-accent)'
+          }}>
+            ⟮
+          </div>
+        )}
               <div className="section-title">
                 {getFullSubheading(section.subheading)}
               </div>
@@ -836,9 +879,11 @@ export function FormBuilder() {
                   ×
                 </button>
               </div>
-            </div>
-          ))}
-        </div>
+              </div>
+    </div>
+  );
+})}
+</div>
 
 {/* Connected Emotions Section */}
 <div className="connected-emotions-container">

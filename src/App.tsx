@@ -180,7 +180,7 @@ export default function App() {
                       <li>Some popups have been restyled.</li>
                       <li>Subheading options are now better grouped for better readability.</li>
                       <li>There is now a direct option to add an opposite section below a section.</li>
-                      <li>Sections can now be reordered using drag-and-drop.</li>
+                      <li>Sections can now be reordered using an intuitive drag-and-drop system.</li>
                       <li>Information about the app can now be found in the info section in the header.</li>
                       <li>Choosing the 'inherited from' option in the source of belief menu now offers a custom text box option for more customizability.</li>
                       <li>The tutorial has been updated to reflect these changes. Feel free to refer to it - the question mark icon in the header - as you get to know the new features.</li>
