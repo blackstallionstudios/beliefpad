@@ -697,10 +697,151 @@ export function FormBuilder() {
           </div>
         </div>
 
+{/* Add Section - moved below Connected Emotions */}
+<div className="card sticky-header" style={{ top: '0' }}>
+          <div className="field">
+            <label className="field-label">add new section</label>
+            <div className="inline">
+              <select
+                value={selectedSubheading}
+                onChange={(e) => setSelectedSubheading(e.target.value)}
+                className="select"
+                style={{ flex: 1 }}
+              >
+                <option value="">select a subheading...</option>
+                <optgroup label="Version 1">
+                  {["NP", "LB", "FCB", "FCI"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Version 2">
+                  {["NP 2", "LB 2", "FCB 2", "FCI 2"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Version 3">
+                  {["NP 3", "LB 3", "FCB 3", "FCI 3"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Empowering (Replacements)">
+                  {["PP", "EB", "ECB", "ECI"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Connections">
+                  {["Connected Emotions", "Body Code Connections"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="Defragmentation">
+                  {["Defragmentation of the Subconcious Gap"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+                <option value="" disabled>──────────</option>
+                <optgroup label="More">
+                  {["More"].map((heading) => (
+                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
+                  ))}
+                </optgroup>
+              </select>
+              <button onClick={addSection} className="btn btn-primary">
+                add
+              </button>
+            </div>
+          </div>
+        </div>
 
+        
 
-        {/* Connected Emotions Section */}
-        <div className="connected-emotions-container">
+        {/* Form Sections */}
+        <div className="list">
+          {sections.map((section, index) => (
+            <div
+              key={section.id}
+              className="section-horizontal"
+              draggable={!isPairChildAt(index)}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop(index)}
+              onDragEnd={handleDragEnd}
+              style={{ cursor: !isPairChildAt(index) ? 'grab' : 'default' }}
+            >
+              <div className="section-title">
+                {getFullSubheading(section.subheading)}
+              </div>
+              <div className="section-input">
+                <textarea
+                  ref={(el) => {
+                    if (el) {
+                      textareaRefs.current.set(section.id, el);
+                    } else {
+                      textareaRefs.current.delete(section.id);
+                    }
+                  }}
+                  value={section.content}
+                  onChange={(e) => handleTextareaInput(e, section.id)}
+                  placeholder={`enter statement for ${getFullSubheading(section.subheading)}...`}
+                  className="input"
+                  style={{
+                    width: '100%',
+                    minHeight: '2.25rem',
+                    maxHeight: '200px',
+                    resize: 'none',
+                    overflow: 'hidden'
+                  }}
+                  rows={1}
+                  onFocus={() => setActiveSection(section.id)}
+                  onBlur={() => setActiveSection(null)}
+                />
+              </div>
+              <div className="section-actions-horizontal">
+                <button
+                  onClick={() => handlePasteToSection(section.id)}
+                  className="btn btn-sm btn-success"
+                  type="button"
+                  title="paste from clipboard"
+                >
+                  ✓
+                </button>
+                {getOppositeSubheading(section.subheading) && (
+                  <button
+                    onClick={() => addOppositeSectionBelow(section.id)}
+                    className="btn btn-sm"
+                    type="button"
+                    title="add opposite section below"
+                  >
+                    ↔
+                  </button>
+                )}
+                <button
+                  onClick={() => duplicateSection(section.id)}
+                  className="btn btn-sm"
+                  type="button"
+                  title="duplicate section"
+                >
+                  ⧉
+                </button>
+                <button
+                  onClick={() => removeSection(section.id)}
+                  className="btn btn-sm btn-destructive"
+                  title="remove section"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+{/* Connected Emotions Section */}
+<div className="connected-emotions-container">
           <div className="connected-emotions-header">
             Connected Emotions
           </div>
@@ -809,148 +950,7 @@ export function FormBuilder() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Form Sections */}
-        <div className="list">
-          {sections.map((section, index) => (
-            <div
-              key={section.id}
-              className="section-horizontal"
-              draggable={!isPairChildAt(index)}
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(index)}
-              onDragEnd={handleDragEnd}
-              style={{ cursor: !isPairChildAt(index) ? 'grab' : 'default' }}
-            >
-              <div className="section-title">
-                {getFullSubheading(section.subheading)}
-              </div>
-              <div className="section-input">
-                <textarea
-                  ref={(el) => {
-                    if (el) {
-                      textareaRefs.current.set(section.id, el);
-                    } else {
-                      textareaRefs.current.delete(section.id);
-                    }
-                  }}
-                  value={section.content}
-                  onChange={(e) => handleTextareaInput(e, section.id)}
-                  placeholder={`enter statement for ${getFullSubheading(section.subheading)}...`}
-                  className="input"
-                  style={{
-                    width: '100%',
-                    minHeight: '2.25rem',
-                    maxHeight: '200px',
-                    resize: 'none',
-                    overflow: 'hidden'
-                  }}
-                  rows={1}
-                  onFocus={() => setActiveSection(section.id)}
-                  onBlur={() => setActiveSection(null)}
-                />
-              </div>
-              <div className="section-actions-horizontal">
-                <button
-                  onClick={() => handlePasteToSection(section.id)}
-                  className="btn btn-sm btn-success"
-                  type="button"
-                  title="paste from clipboard"
-                >
-                  ✓
-                </button>
-                {getOppositeSubheading(section.subheading) && (
-                  <button
-                    onClick={() => addOppositeSectionBelow(section.id)}
-                    className="btn btn-sm"
-                    type="button"
-                    title="add opposite section below"
-                  >
-                    ↔
-                  </button>
-                )}
-                <button
-                  onClick={() => duplicateSection(section.id)}
-                  className="btn btn-sm"
-                  type="button"
-                  title="duplicate section"
-                >
-                  ⧉
-                </button>
-                <button
-                  onClick={() => removeSection(section.id)}
-                  className="btn btn-sm btn-destructive"
-                  title="remove section"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Add Section - moved below Connected Emotions */}
-        <div className="card sticky-header" style={{ top: '0' }}>
-          <div className="field">
-            <label className="field-label">add new section</label>
-            <div className="inline">
-              <select
-                value={selectedSubheading}
-                onChange={(e) => setSelectedSubheading(e.target.value)}
-                className="select"
-                style={{ flex: 1 }}
-              >
-                <option value="">select a subheading...</option>
-                <optgroup label="Version 1">
-                  {["NP", "LB", "FCB", "FCI"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="Version 2">
-                  {["NP 2", "LB 2", "FCB 2", "FCI 2"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="Version 3">
-                  {["NP 3", "LB 3", "FCB 3", "FCI 3"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="Empowering (Replacements)">
-                  {["PP", "EB", "ECB", "ECI"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="Connections">
-                  {["Connected Emotions", "Body Code Connections"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="Defragmentation">
-                  {["Defragmentation of the Subconcious Gap"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-                <option value="" disabled>──────────</option>
-                <optgroup label="More">
-                  {["More"].map((heading) => (
-                    <option key={heading} value={heading}>{getFullSubheading(heading)}</option>
-                  ))}
-                </optgroup>
-              </select>
-              <button onClick={addSection} className="btn btn-primary">
-                add
-              </button>
-            </div>
-          </div>
-        </div>
+        </div>        
 
         {/* Actions */}
         {(sections.length > 0 || connectedEmotionsSections.length > 0) && (

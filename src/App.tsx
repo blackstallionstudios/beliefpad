@@ -177,7 +177,6 @@ export default function App() {
                       You’re using the latest version of beliefpad.
                     </p>
                     <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0', color: 'var(--color-text)' }}>
-                      <li>Connected Emotions now appears before other sections.</li>
                       <li>Some popups have been restyled.</li>
                       <li>Subheading options are now better grouped for better readability.</li>
                       <li>There is now a direct option to add an opposite section below a section.</li>
