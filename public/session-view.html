@@ -289,6 +289,17 @@
             }
         }
 
+        // Function to escape HTML special characters
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // Function to render the session
         function renderSession(sessionData) {
             const container = document.getElementById('session-container');
@@ -296,21 +307,21 @@
             let html = `
                 <button onclick="openShareModal()" class="share-button">📤 Share Session</button>
                 <div class="header">
-                    <div class="client-name">Belief Code Session for ${sessionData.clientName || 'Unknown Client'}</div>
+                    <div class="client-name">Belief Code Session for ${escapeHtml(sessionData.clientName) || 'Unknown Client'}</div>
                 </div>
 
                 <div class="session-info">
                     <div class="info-item">
                         <div class="info-label">Subject</div>
-                        <div class="info-value">${sessionData.subject || '—'}</div>
+                        <div class="info-value">${escapeHtml(sessionData.subject) || '—'}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Session Type</div>
-                        <div class="info-value">${sessionData.sessionType || '—'}</div>
+                        <div class="info-value">${escapeHtml(sessionData.sessionType) || '—'}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Source of Belief</div>
-                        <div class="info-value">${sessionData.sourceOfBelief || '—'}</div>
+                        <div class="info-value">${escapeHtml(sessionData.sourceOfBelief) || '—'}</div>
                     </div>
                 </div>
             `;
