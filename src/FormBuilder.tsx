@@ -212,26 +212,47 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
   };
 
   // addSection function
-  const addSection = () => {
-    logger.info("FB", `addSection called with selectedSubheading: ${selectedSubheading}`);
+const addSection = () => {
+  logger.info("FB", `addSection called with selectedSubheading: ${selectedSubheading}`);
 
-    if (!selectedSubheading) {
-      logger.warn("FB", "addSection failed - no subheading selected");
-      toast.error("please select a subheading");
-      return;
-    }
+  if (!selectedSubheading) {
+    logger.warn("FB", "addSection failed - no subheading selected");
+    toast.error("please select a subheading");
+    return;
+  }
 
-    const newSection: FormSection = {
-      id: Date.now().toString(),
-      subheading: selectedSubheading,
-      content: getDefaultContent(selectedSubheading), // Use default content
-    };
-
-    logger.info("FB", `Adding new section: ${newSection.subheading} with id: ${newSection.id}`);
-    trackUserAction("section_added", "FB", { sectionType: selectedSubheading, sectionId: newSection.id });
-    setSections([...sections, newSection]);
-    setSelectedSubheading("");
+  const newSection: FormSection = {
+    id: Date.now().toString(),
+    subheading: selectedSubheading,
+    content: getDefaultContent(selectedSubheading), // Use default content
   };
+
+  logger.info("FB", `Adding new section: ${newSection.subheading} with id: ${newSection.id}`);
+  trackUserAction("section_added", "FB", { sectionType: selectedSubheading, sectionId: newSection.id });
+  
+  // If it's Body Code Connections, add it at the end
+  if (selectedSubheading === "Body Code Connections") {
+    setSections([...sections, newSection]);
+  } else {
+    // For other sections, insert before any existing Body Code Connections sections
+    const bodyCodeIndex = sections.findIndex(s => s.subheading === "Body Code Connections");
+    
+    if (bodyCodeIndex === -1) {
+      // No Body Code Connections section exists, just add at the end
+      setSections([...sections, newSection]);
+    } else {
+      // Insert before the first Body Code Connections section
+      const newSections = [
+        ...sections.slice(0, bodyCodeIndex),
+        newSection,
+        ...sections.slice(bodyCodeIndex)
+      ];
+      setSections(newSections);
+    }
+  }
+  
+  setSelectedSubheading("");
+};
 
   // Connected Emotions functions
   const addConnectedEmotionsSection = () => {
@@ -523,6 +544,63 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
     textarea.style.height = 'auto';
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
+  // Handle TAB key to duplicate section
+const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, sectionId: string) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const sectionToDuplicate = sections.find(section => section.id === sectionId);
+    if (!sectionToDuplicate) return;
+
+    const duplicatedSection: FormSection = {
+      ...sectionToDuplicate,
+      id: Date.now().toString(),
+      content: getDefaultContent(sectionToDuplicate.subheading),
+    };
+
+    const index = sections.findIndex(section => section.id === sectionId);
+    const newSections = [
+      ...sections.slice(0, index + 1),
+      duplicatedSection,
+      ...sections.slice(index + 1),
+    ];
+    setSections(newSections);
+    
+    // Focus the newly created section
+    setTimeout(() => {
+      const textarea = textareaRefs.current.get(duplicatedSection.id);
+      textarea?.focus();
+    }, 50);
+  }
+};
+
+// Handle TAB key for Connected Emotions sections
+const handleConnectedEmotionsKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, sectionId: string) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const sectionToDuplicate = connectedEmotionsSections.find(section => section.id === sectionId);
+    if (!sectionToDuplicate) return;
+
+    const duplicatedSection: ConnectedEmotionsSection = {
+      ...sectionToDuplicate,
+      id: Date.now().toString(),
+      content: "",
+    };
+
+    const index = connectedEmotionsSections.findIndex(section => section.id === sectionId);
+    const newSections = [
+      ...connectedEmotionsSections.slice(0, index + 1),
+      duplicatedSection,
+      ...connectedEmotionsSections.slice(index + 1),
+    ];
+    setConnectedEmotionsSections(newSections);
+    
+    // Focus the newly created section
+    setTimeout(() => {
+      const textarea = connectedEmotionsTextareaRefs.current.get(duplicatedSection.id);
+      textarea?.focus();
+    }, 50);
+  }
+};
 
   // Helper function to generate storage key
   const generateStorageKey = () => {
@@ -767,14 +845,17 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
         
 
         {/* Form Sections */}
-        <div className="list">
-        {sections.map((section, index) => {
-  const isPairChild = isPairChildAt(index);
-  const isPairParent = isPairParentAt(index);
-  const isDragging = draggedBlock?.start === index || 
-                     (draggedBlock?.length === 2 && draggedBlock.start === index - 1);
-  const isDropZone = dropTarget === index;
-  
+<div className="list">
+  {sections
+    .filter(section => section.subheading !== "Body Code Connections") // Filter out Body Code Connections
+    .map((section, index) => {
+    const originalIndex = sections.indexOf(section);
+    const isPairChild = isPairChildAt(originalIndex);
+    const isPairParent = isPairParentAt(originalIndex);
+    const isDragging = draggedBlock?.start === originalIndex || 
+                       (draggedBlock?.length === 2 && draggedBlock.start === originalIndex - 1);
+    const isDropZone = dropTarget === originalIndex;
+    
   return (
     <div key={section.id}>
       {isDropZone && !isDragging && (
@@ -790,10 +871,10 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
       <div
         className="section-horizontal"
         draggable={!isPairChild}
-        onDragStart={(e) => handleDragStart(e, index)}
-        onDragOver={(e) => handleDragOver(e, index)}
+        onDragStart={(e) => handleDragStart(e, originalIndex)}
+        onDragOver={(e) => handleDragOver(e, originalIndex)}
         onDragLeave={handleDragLeave}
-        onDrop={() => handleDrop(index)}
+        onDrop={() => handleDrop(originalIndex)}
         onDragEnd={handleDragEnd}
         style={{
           cursor: !isPairChild ? 'grab' : 'default',
@@ -820,29 +901,30 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
                 {getFullSubheading(section.subheading)}
               </div>
               <div className="section-input">
-                <textarea
-                  ref={(el) => {
-                    if (el) {
-                      textareaRefs.current.set(section.id, el);
-                    } else {
-                      textareaRefs.current.delete(section.id);
-                    }
-                  }}
-                  value={section.content}
-                  onChange={(e) => handleTextareaInput(e, section.id)}
-                  placeholder={`enter statement for ${getFullSubheading(section.subheading)}...`}
-                  className="input"
-                  style={{
-                    width: '100%',
-                    minHeight: '2.25rem',
-                    maxHeight: '200px',
-                    resize: 'none',
-                    overflow: 'hidden'
-                  }}
-                  rows={1}
-                  onFocus={() => setActiveSection(section.id)}
-                  onBlur={() => setActiveSection(null)}
-                />
+              <textarea
+  ref={(el) => {
+    if (el) {
+      textareaRefs.current.set(section.id, el);
+    } else {
+      textareaRefs.current.delete(section.id);
+    }
+  }}
+  value={section.content}
+  onChange={(e) => handleTextareaInput(e, section.id)}
+  onKeyDown={(e) => handleTextareaKeyDown(e, section.id)}
+  placeholder={`enter statement for ${getFullSubheading(section.subheading)}...`}
+  className="input"
+  style={{
+    width: '100%',
+    minHeight: '2.25rem',
+    maxHeight: '200px',
+    resize: 'none',
+    overflow: 'hidden'
+  }}
+  rows={1}
+  onFocus={() => setActiveSection(section.id)}
+  onBlur={() => setActiveSection(null)}
+/>
               </div>
               <div className="section-actions-horizontal">
                 <button
@@ -860,7 +942,7 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
                     type="button"
                     title="add opposite section below"
                   >
-                    ↔
+                    ↓
                   </button>
                 )}
                 <button
@@ -942,29 +1024,30 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
                     {getFullSubheading(section.selectedHeading)}
                   </div>
                   <div className="section-input">
-                    <textarea
-                      ref={(el) => {
-                        if (el) {
-                          connectedEmotionsTextareaRefs.current.set(section.id, el);
-                        } else {
-                          connectedEmotionsTextareaRefs.current.delete(section.id);
-                        }
-                      }}
-                      value={section.content}
-                      onChange={(e) => handleConnectedEmotionsTextareaInput(e, section.id)}
-                      placeholder={`enter statement for ${getFullSubheading(section.selectedHeading)}...`}
-                      className="input"
-                      style={{
-                        width: '100%',
-                        minHeight: '2.25rem',
-                        maxHeight: '200px',
-                        resize: 'none',
-                        overflow: 'hidden'
-                      }}
-                      rows={1}
-                      onFocus={() => setActiveConnectedEmotionsSection(section.id)}
-                      onBlur={() => setActiveConnectedEmotionsSection(null)}
-                    />
+                  <textarea
+  ref={(el) => {
+    if (el) {
+      connectedEmotionsTextareaRefs.current.set(section.id, el);
+    } else {
+      connectedEmotionsTextareaRefs.current.delete(section.id);
+    }
+  }}
+  value={section.content}
+  onChange={(e) => handleConnectedEmotionsTextareaInput(e, section.id)}
+  onKeyDown={(e) => handleConnectedEmotionsKeyDown(e, section.id)}
+  placeholder={`enter statement for ${getFullSubheading(section.selectedHeading)}...`}
+  className="input"
+  style={{
+    width: '100%',
+    minHeight: '2.25rem',
+    maxHeight: '200px',
+    resize: 'none',
+    overflow: 'hidden'
+  }}
+  rows={1}
+  onFocus={() => setActiveConnectedEmotionsSection(section.id)}
+  onBlur={() => setActiveConnectedEmotionsSection(null)}
+/>
                   </div>
                   <div className="section-actions-horizontal">
                     <button
@@ -995,7 +1078,76 @@ const [dropTarget, setDropTarget] = useState<number | null>(null);
               </div>
             ))}
           </div>
-        </div>        
+        </div>
+        {/* Body Code Connections Section */}
+{sections.filter(section => section.subheading === "Body Code Connections").length > 0 && (
+  <div className="connected-emotions-container">
+    <div className="connected-emotions-header">
+      Body Code Connections
+    </div>
+    <div className="list">
+      {sections
+        .filter(section => section.subheading === "Body Code Connections")
+        .map((section) => (
+          <div key={section.id} className="connected-emotions-content">
+            <div className="section-horizontal">
+              <div className="section-input" style={{ flex: 1 }}>
+              <textarea
+  ref={(el) => {
+    if (el) {
+      textareaRefs.current.set(section.id, el);
+    } else {
+      textareaRefs.current.delete(section.id);
+    }
+  }}
+  value={section.content}
+  onChange={(e) => handleTextareaInput(e, section.id)}
+  onKeyDown={(e) => handleTextareaKeyDown(e, section.id)}
+  placeholder={`enter statement for Body Code Connections...`}
+  className="input"
+  style={{
+    width: '100%',
+    minHeight: '2.25rem',
+    maxHeight: '200px',
+    resize: 'none',
+    overflow: 'hidden'
+  }}
+  rows={1}
+  onFocus={() => setActiveSection(section.id)}
+  onBlur={() => setActiveSection(null)}
+/>
+              </div>
+              <div className="section-actions-horizontal">
+                <button
+                  onClick={() => handlePasteToSection(section.id)}
+                  className="btn btn-sm btn-success"
+                  type="button"
+                  title="paste from clipboard"
+                >
+                  ✓
+                </button>
+                <button
+                  onClick={() => duplicateSection(section.id)}
+                  className="btn btn-sm"
+                  type="button"
+                  title="duplicate section"
+                >
+                  ⧉
+                </button>
+                <button
+                  onClick={() => removeSection(section.id)}
+                  className="btn btn-sm btn-destructive"
+                  title="remove section"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+    </div>
+  </div>
+)}        
 
         {/* Actions */}
         {(sections.length > 0 || connectedEmotionsSections.length > 0) && (
