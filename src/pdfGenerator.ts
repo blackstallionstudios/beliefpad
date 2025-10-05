@@ -185,21 +185,29 @@ export async function generatePDF(
 
     // Add Connected Emotions sections BEFORE regular sections
     if (connectedEmotionsSections && connectedEmotionsSections.length > 0) {
-      // Add Connected Emotions header
-      if (yPosition > pageHeight - 40) {
-        pdf.addPage();
-        yPosition = 20;
-      }
+      console.log("PG: Processing Connected Emotions sections:", connectedEmotionsSections.length);
       
-      pdf.setFontSize(14);
-      pdf.setFont('Raleway', 'bold');
-      pdf.text('CONNECTED EMOTIONS', margin, yPosition);
-      yPosition += lineHeight * 1.5;
+      // Filter sections with content
+      const sectionsWithContent = connectedEmotionsSections.filter(s => s.content && s.content.trim());
+      console.log("PG: Connected Emotions sections with content:", sectionsWithContent.length);
       
-      pdf.setFontSize(12);
-      
-      connectedEmotionsSections.forEach((section) => {
-        if (section.content && section.content.trim()) {
+      if (sectionsWithContent.length > 0) {
+        // Add Connected Emotions header
+        if (yPosition > pageHeight - 40) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        
+        pdf.setFontSize(14);
+        pdf.setFont('Raleway', 'bold');
+        pdf.text('CONNECTED EMOTIONS', margin, yPosition);
+        yPosition += lineHeight * 1.5;
+        
+        pdf.setFontSize(12);
+        
+        sectionsWithContent.forEach((section, index) => {
+          console.log(`PG: Rendering Connected Emotions section ${index + 1}:`, section.selectedHeading);
+          
           // Check for new page
           if (yPosition > pageHeight - 40) {
             pdf.addPage();
@@ -226,8 +234,14 @@ export async function generatePDF(
             }
           }
           yPosition += lineHeight * 1.5;
-        }
-      });
+        });
+        
+        console.log("PG: Connected Emotions sections rendered successfully.");
+      } else {
+        console.log("PG: No Connected Emotions sections with content to render.");
+      }
+    } else {
+      console.log("PG: No Connected Emotions sections provided.");
     }
 
     // Add regular sections AFTER Connected Emotions

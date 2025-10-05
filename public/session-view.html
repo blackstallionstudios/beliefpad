@@ -1,290 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session View</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f5f5f5;
+        /* Font Imports */
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+        /* CSS Reset */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
-        
+
+        * {
+            margin: 0;
+        }
+
+        body {
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            background-color: #ffffff;
+            color: #111827;
+        }
+
+        /* CSS Variables */
+        :root {
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            --color-white: #ffffff;
+            --color-black: #000000;
+            --color-gray-50: #f9fafb;
+            --color-gray-100: #f3f4f6;
+            --color-gray-200: #e5e7eb;
+            --color-gray-300: #d1d5db;
+            --color-gray-400: #9ca3af;
+            --color-gray-500: #6b7280;
+            --color-gray-600: #4b5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1f2937;
+            --color-gray-900: #111827;
+
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
         .session-view {
             max-width: 800px;
             margin: 0 auto;
-            padding: 0.5rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.5;
-            color: #333;
+            padding: var(--spacing-lg);
+            font-family: var(--font-mono);
+            line-height: 1.6;
+            color: var(--color-gray-900);
         }
-        
+
         .session-view .header {
             text-align: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--color-gray-200);
         }
-        
+
         .session-view .client-name {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 0.25rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-gray-900);
         }
-        
+
         .session-view .session-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 6px;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: var(--color-gray-50);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
         }
-        
+
         .session-view .info-item {
             display: flex;
             flex-direction: column;
         }
-        
+
         .session-view .info-label {
             font-size: 0.75rem;
-            font-weight: 600;
-            color: #666;
+            font-weight: 500;
+            color: var(--color-gray-600);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 0.125rem;
+            margin-bottom: var(--spacing-xs);
+            font-family: var(--font-sans);
         }
-        
+
         .session-view .info-value {
             font-size: 0.875rem;
-            color: #333;
+            color: var(--color-gray-900);
+            font-family: var(--font-mono);
         }
-        
+
         .session-view .section {
-            margin-bottom: 0.75rem;
-            padding: 0.75rem;
-            border: 1px solid #e5e5e5;
-            border-radius: 4px;
-            background: white;
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            background: var(--color-white);
+            box-shadow: var(--shadow-sm);
         }
-        
+
         .session-view .section-title {
             font-size: 1rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid #ecf0f1;
+            color: var(--color-gray-800);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-gray-100);
+            font-family: var(--font-sans);
         }
-        
+
         .session-view .section-content {
             font-size: 0.875rem;
-            line-height: 1.5;
-            color: #34495e;
+            line-height: 1.7;
+            color: var(--color-gray-700);
             white-space: pre-wrap;
+            font-family: var(--font-mono);
         }
-        
+
         .session-view .connected-emotions-header {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 1rem 0 0.5rem 0;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid #3498db;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--color-gray-200);
+            font-family: var(--font-sans);
         }
-        
+
         .session-view .empty-content {
-            color: #95a5a6;
+            color: var(--color-gray-400);
             font-style: italic;
+            font-family: var(--font-mono);
         }
-        
+
         @media print {
             .session-view {
                 padding: 0;
             }
-            
+
             .session-view .section {
                 break-inside: avoid;
                 page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--color-gray-300);
             }
-        }
-        
-        /* Share Modal Styles */
-        .share-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .share-modal {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        .share-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        
-        .share-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            color: #333;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
-        .close-btn:hover {
-            background: #f5f5f5;
-            color: #333;
-        }
-        
-        .share-content p {
-            margin: 0 0 1rem 0;
-            color: #666;
-        }
-        
-        .url-container {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .url-input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            background: #f9f9f9;
-        }
-        
-        .copy-btn {
-            padding: 0.75rem 1rem;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            white-space: nowrap;
-        }
-        
-        .copy-btn:hover {
-            background: #0056b3;
-        }
-        
-        .share-options {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .share-option-btn {
-            padding: 0.5rem 1rem;
-            background: #f8f9fa;
-            border: 1px solid #000000;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-        
-        .share-option-btn:hover {
-            background: #e9ecef;
-            border-color: #adb5bd;
-        }
-        
-        /* Share button in session view */
-        .share-button {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.75rem 1rem;
-            background: #000000;
-            color: white;
-            border: 1px solid white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-        }
-        
-        .share-button:hover {
-            background: #ffffff;
-            color: black;
-            border: 1px solid black;
         }
     </style>
 </head>
+
 <body>
     <div id="session-container" class="session-view">
         <!-- Session content will be inserted here -->
     </div>
-    
-    <div id="share-container" style="display: none;">
-        <div class="share-overlay">
-            <div class="share-modal">
-                <div class="share-header">
-                    <h3>Share Session</h3>
-                    <button onclick="closeShareModal()" class="close-btn">&times;</button>
-                </div>
-                <div class="share-content">
-                    <p>Copy this link to share the session:</p>
-                    <div class="url-container">
-                        <input type="text" id="share-url" readonly class="url-input">
-                        <button onclick="copyShareUrl()" class="copy-btn">Copy</button>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
+        // Simple logging function for session view
+        function logToVercel(component, message, data) {
+            // Log to console
+            console.log(component, message, data);
+
+            // Send to Vercel Analytics if available
+            if (typeof window !== 'undefined' && window.va) {
+                try {
+                    window.va('track', 'app_log', {
+                        level: 'info',
+                        component: component,
+                        message: message,
+                        data: data ? JSON.stringify(data) : undefined,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        url: window.location.href
+                    });
+                } catch (error) {
+                    console.error('Failed to send log to Vercel Analytics:', error);
+                }
+            }
+        }
+
         // Function to get URL parameters
         function getUrlParameter(name) {
+            logToVercel("SV", `Getting URL parameter: ${name}`);
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+            const value = urlParams.get(name);
+            logToVercel("SV", `URL parameter ${name}: ${value ? 'found' : 'not found'}`);
+            return value;
         }
 
         // Function to decode base64 data
         function decodeBase64(str) {
+            logToVercel("SV", "Attempting to decode base64 data");
             try {
-                return atob(str);
+                const decoded = decodeURIComponent(atob(str).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                logToVercel("SV", "Base64 decode successful");
+                return decoded;
             } catch (e) {
+                logToVercel("SV", `Base64 decode failed: ${e.message}`);
                 return null;
             }
         }
@@ -302,26 +240,28 @@
 
         // Function to render the session
         function renderSession(sessionData) {
+            logToVercel("SV", "Rendering session data");
+            logToVercel("SV", `Session data: ${JSON.stringify(sessionData, null, 2)}`);
+
             const container = document.getElementById('session-container');
-            
+
             let html = `
-                <button onclick="openShareModal()" class="share-button">📤 Share Session</button>
                 <div class="header">
-                    <div class="client-name">Belief Code Session for ${escapeHtml(sessionData.clientName) || 'Unknown Client'}</div>
+                    <div class="client-name">Belief Code Session for ${sessionData.clientName || 'Unknown Client'}</div>
                 </div>
 
                 <div class="session-info">
                     <div class="info-item">
                         <div class="info-label">Subject</div>
-                        <div class="info-value">${escapeHtml(sessionData.subject) || '—'}</div>
+                        <div class="info-value">${sessionData.subject || '—'}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Session Type</div>
-                        <div class="info-value">${escapeHtml(sessionData.sessionType) || '—'}</div>
+                        <div class="info-value">${sessionData.sessionType || '—'}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Source of Belief</div>
-                        <div class="info-value">${escapeHtml(sessionData.sourceOfBelief) || '—'}</div>
+                        <div class="info-value">${sessionData.sourceOfBelief || '—'}</div>
                     </div>
                 </div>
             `;
@@ -335,6 +275,41 @@
                 `;
             }
 
+            // Separate Body Code Connections from other sections
+            let bodyCodeSections = [];
+            let otherSections = [];
+            
+            if (sessionData.sections && sessionData.sections.length > 0) {
+                sessionData.sections.forEach(section => {
+                    if (section.subheading === 'Body Code Connections') {
+                        bodyCodeSections.push(section);
+                    } else {
+                        otherSections.push(section);
+                    }
+                });
+            }
+
+            // Render non-Body Code sections first
+            if (otherSections.length > 0) {
+                otherSections.forEach(section => {
+                    html += `
+                        <div class="section">
+                            <div class="section-title">${section.subheading}</div>
+                            <div class="section-content">
+                                ${section.content || '<span class="empty-content">No content</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Add separator if there are other sections and connected emotions exist
+            if (otherSections.length > 0 &&
+                sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
+                html += `<div style="border-top: 1px solid var(--color-gray-200); margin: var(--spacing-lg) 0;"></div>`;
+            }
+
+            // Render connected emotions sections
             if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
                 html += `<div class="connected-emotions-header">Connected Emotions</div>`;
                 sessionData.connectedEmotionsSections.forEach(section => {
@@ -349,11 +324,15 @@
                 });
             }
 
-            if (sessionData.sections && sessionData.sections.length > 0) {
-                if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0) {
-                    html += `<div style=\"border-top: 1px solid #e5e5e5; margin: 1rem 0;\"></div>`;
-                }
-                sessionData.sections.forEach(section => {
+            // Add separator if connected emotions exist and Body Code sections exist
+            if (sessionData.connectedEmotionsSections && sessionData.connectedEmotionsSections.length > 0 &&
+                bodyCodeSections.length > 0) {
+                html += `<div style="border-top: 1px solid var(--color-gray-200); margin: var(--spacing-lg) 0;"></div>`;
+            }
+
+            // Render Body Code Connections sections last
+            if (bodyCodeSections.length > 0) {
+                bodyCodeSections.forEach(section => {
                     html += `
                         <div class="section">
                             <div class="section-title">${section.subheading}</div>
@@ -365,7 +344,7 @@
                 });
             }
 
-            if ((!sessionData.sections || sessionData.sections.length === 0) && 
+            if ((!sessionData.sections || sessionData.sections.length === 0) &&
                 (!sessionData.connectedEmotionsSections || sessionData.connectedEmotionsSections.length === 0)) {
                 html += `
                     <div class="section">
@@ -381,109 +360,49 @@
 
         // Load session data from URL parameters
         function loadSession() {
+            logToVercel("SV", "Loading session data from URL parameters");
             const sessionDataParam = getUrlParameter('data');
             if (sessionDataParam) {
+                logToVercel("SV", "Session data parameter found, attempting to decode");
+                // decodeBase64 now expects URI-encoded base64
                 const decodedData = decodeBase64(sessionDataParam);
                 if (decodedData) {
                     try {
+                        logToVercel("SV", "Parsing JSON session data");
                         const sessionData = JSON.parse(decodedData);
+
+                        // Ensure full 'inherited from ...' string is preserved
+                        // No transformation needed, just display sessionData.sourceOfBelief as-is
+
+                        logToVercel("SV", "JSON parsing successful, rendering session");
                         renderSession(sessionData);
                         document.title = `Session - ${sessionData.clientName || 'Unknown Client'}`;
+                        logToVercel("SV", "Session rendering completed");
                     } catch (e) {
+                        logToVercel("SV", `Error parsing session data: ${e.message}`);
                         console.error('Error parsing session data:', e);
-                        document.getElementById('session-container').innerHTML = 
+                        document.getElementById('session-container').innerHTML =
                             '<div class="section"><div class="section-content">Error loading session data.</div></div>';
                     }
                 } else {
-                    document.getElementById('session-container').innerHTML = 
+                    logToVercel("SV", "Failed to decode base64 data");
+                    document.getElementById('session-container').innerHTML =
                         '<div class="section"><div class="section-content">Invalid session data.</div></div>';
                 }
             } else {
-                document.getElementById('session-container').innerHTML = 
+                logToVercel("SV", "No session data parameter found in URL");
+                document.getElementById('session-container').innerHTML =
                     '<div class="section"><div class="section-content">No session data provided.</div></div>';
             }
         }
 
         // Load session when page loads
-        window.addEventListener('load', loadSession);
-        
-        // Share functionality
-        function openShareModal() {
-            const shareContainer = document.getElementById('share-container');
-            const shareUrl = document.getElementById('share-url');
-            shareUrl.value = window.location.href;
-            shareContainer.style.display = 'block';
-        }
-        
-        function closeShareModal() {
-            const shareContainer = document.getElementById('share-container');
-            shareContainer.style.display = 'none';
-        }
-        
-        function copyShareUrl() {
-            const shareUrl = document.getElementById('share-url');
-            shareUrl.select();
-            shareUrl.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand('copy');
-            
-            // Show feedback
-            const copyBtn = document.querySelector('.copy-btn');
-            const originalText = copyBtn.textContent;
-            copyBtn.textContent = 'Copied!';
-            copyBtn.style.background = '#28a745';
-            
-            setTimeout(() => {
-                copyBtn.textContent = originalText;
-                copyBtn.style.background = '#007bff';
-            }, 2000);
-        }
-        
-        function shareViaEmail() {
-            const sessionDataParam = getUrlParameter('data');
-            if (sessionDataParam) {
-                const decodedData = decodeBase64(sessionDataParam);
-                if (decodedData) {
-                    try {
-                        const sessionData = JSON.parse(decodedData);
-                        const subject = `Belief Code Session - ${sessionData.clientName || 'Unknown Client'}`;
-                        const body = `View this Belief Code session: ${window.location.href}`;
-                        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                        window.location.href = mailtoLink;
-                    } catch (e) {
-                        console.error('Error parsing session data for email:', e);
-                    }
-                }
-            }
-        }
-        
-        function shareViaWhatsApp() {
-            const text = `View this Belief Code session: ${window.location.href}`;
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        function shareViaTelegram() {
-            const text = `View this Belief Code session: ${window.location.href}`;
-            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Belief Code Session')}`;
-            window.open(telegramUrl, '_blank');
-        }
-        
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const shareContainer = document.getElementById('share-container');
-            const shareModal = document.querySelector('.share-modal');
-            
-            if (event.target === shareContainer) {
-                closeShareModal();
-            }
-        });
-        
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeShareModal();
-            }
+        logToVercel("SV", "Setting up page load event listener");
+        window.addEventListener('load', () => {
+            logToVercel("SV", "Page loaded, starting session load process");
+            loadSession();
         });
     </script>
 </body>
+
 </html>
