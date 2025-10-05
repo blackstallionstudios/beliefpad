@@ -345,12 +345,22 @@ const addSection = () => {
   };
 
   useEffect(() => {
+    let lastCtrlKeyTime = 0;
+    let lastNumberPressed: string | null = null;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!e.ctrlKey) return;
 
-      const isOption = e.altKey;
-      const isShift = e.shiftKey;
-      const isCommand = e.metaKey;
+      const currentTime = Date.now();
+      const key = e.key.toLowerCase();
+
+      // Check if a number key (2 or 3) was pressed
+      if (key === '2' || key === '3') {
+        lastCtrlKeyTime = currentTime;
+        lastNumberPressed = key;
+        e.preventDefault();
+        return;
+      }
 
       const keyMap: Record<string, string[]> = {
         n: ["NP", "NP 2", "NP 3"],
@@ -359,16 +369,23 @@ const addSection = () => {
         i: ["FCI", "FCI 2", "FCI 3"],
       };
 
-      const key = e.key.toLowerCase();
       if (keyMap[key]) {
-        let heading = keyMap[key][0];
+        let heading = keyMap[key][0]; // Default to V1
 
-        if (isShift && !isOption && !isCommand) heading = keyMap[key][1];
-        if (isShift && isOption && !isCommand) heading = keyMap[key][2];
-        if (isShift && isCommand && !isOption) heading = keyMap[key][2];
+        // Check if a number was pressed within the last 500ms
+        if (currentTime - lastCtrlKeyTime < 500 && lastNumberPressed) {
+          if (lastNumberPressed === '2') {
+            heading = keyMap[key][1]; // V2
+          } else if (lastNumberPressed === '3') {
+            heading = keyMap[key][2]; // V3
+          }
+        }
 
         addSectionWithHeading(heading);
         e.preventDefault();
+        
+        // Reset the number tracking
+        lastNumberPressed = null;
       }
     };
 

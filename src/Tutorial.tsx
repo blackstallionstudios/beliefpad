@@ -73,6 +73,21 @@ const TUTORIAL_STEPS = [
     buttonText: 'OK, got it'
   },
   {
+    id: 'keyboard-shortcuts',
+    title: 'Keyboard Shortcuts',
+    content: (
+      <div>
+        <p>Now, let's try using the keyboard shortcuts.</p>
+        <ul className="list-disc list-inside mt-2 space-y-1">
+          <li>The TAB key can be used to duplicate a section.</li>
+          <li>The CTRL key can be used to add a section: CTRL+N for NP, CTRL+L for LB, CTRL+B for FCB, CTRL+I for FCI.</li>
+          <li>For the numbered sections, add 2 or 3 in the keyboard shortcut respectively.</li>
+          </ul>
+      </div>
+    ),
+    buttonText: 'OK, got it'
+  },
+  {
     id: 'saving',
     title: 'Saving and Loading Forms',
     content: (

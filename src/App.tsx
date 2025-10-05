@@ -185,6 +185,7 @@ export default function App() {
                       <li>The Body Code Connections section has been restyled and relocated to the bottom of the form.</li>
                       <li>The View Session tool and the Export to PDF tool have been reworked to function with recent changes.</li>
                       <li>The tutorial has been updated to reflect these changes. Feel free to refer to it - the question mark icon in the header - as you get to know the new features.</li>
+                      <li>Make sure to also check out the keyboard shortcuts in the tutorial.</li>
                     </ul>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '12px' }}>
                       Tip: This changelog will automatically be shown in future updates.
