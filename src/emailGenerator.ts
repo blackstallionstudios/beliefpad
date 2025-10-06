@@ -116,7 +116,7 @@ export function generateEmailContent(
   
   const result = {
     subject: emailSubject,
-    body: bodyLines.join('%0D%0A')
+    body: bodyLines.join('\n\n')
   };
   
   logger.info("EG", `Generated email content - subject: ${result.subject}, body length: ${result.body.length} characters`);
