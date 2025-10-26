@@ -41,3 +41,6 @@ export function generateJSON(
 
   return sessionData; // always return JSON object
 }
+if (typeof window !== "undefined") {
+  (window as any).generateJSON = generateJSON;
+}

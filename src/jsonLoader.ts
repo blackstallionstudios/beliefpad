@@ -64,4 +64,6 @@ export function loadJSON(
         console.error("Failed to load form from localStorage:", error);
         toast.error("Failed to load form from localStorage.");
     }
-}
+}if (typeof window !== "undefined") {
+    (window as any).loadJSON = loadJSON;
+  }

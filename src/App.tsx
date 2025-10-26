@@ -177,6 +177,7 @@ export default function App() {
                       You’re using the latest version of beliefpad.
                     </p>
                     <ul style={{ paddingLeft: '1.2rem', margin: '0 0 1rem 0', color: 'var(--color-text)' }}>
+                      <li>You can now share sessions via QR code or link from mobile to desktop.</li>
                       <li>There is now a direct option to add an opposite section below a section.</li>
                       <li>Sections can now be reordered using an intuitive drag-and-drop system.</li>
                       <li>Information about the app can now be found in the info section in the header.</li>

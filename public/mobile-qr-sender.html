@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Sender</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    * {
+      margin: 0;
+    }
+
+    body {
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #111827;
+      padding: 2rem 1rem;
+    }
+
+    :root {
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --color-white: #ffffff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-400: #9ca3af;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-800: #1f2937;
+      --color-gray-900: #111827;
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      font-family: var(--font-sans);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-gray-900);
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: var(--color-gray-600);
+    }
+
+    .section {
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-lg);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      background: var(--color-white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-gray-800);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    button {
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin: var(--spacing-sm) auto;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--color-gray-300);
+      background: var(--color-white);
+      color: var(--color-gray-700);
+      transition: all 0.15s ease;
+      display: block;
+      width: 100%; /* Make default button full width */
+    }
+
+    button:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-400);
+    }
+
+    button:active {
+      background: var(--color-gray-100);
+    }
+    
+    .inline-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+    }
+
+    .inline-actions button {
+      width: auto;
+      flex-grow: 1;
+      margin: 0;
+      padding: 0.5rem 1rem;
+    }
+    
+    .btn-primary {
+      background-color: #6366f1;
+      color: white;
+      border-color: #6366f1;
+    }
+    .btn-primary:hover {
+      background-color: #4f46e5;
+      border-color: #4f46e5;
+    }
+    .btn-primary:active {
+      background-color: #4338ca;
+    }
+
+
+    #qr-container {
+      display: flex;
+      justify-content: center;
+      margin: var(--spacing-lg) 0;
+    }
+
+    canvas {
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-md);
+      background: var(--color-gray-50);
+      color: var(--color-gray-900);
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-gray-400);
+      background: var(--color-white);
+    }
+
+    .link-display {
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      word-break: break-all;
+    }
+
+    .link-display a {
+      color: var(--color-gray-700);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-family: var(--font-mono);
+    }
+
+    .link-display a:hover {
+      color: var(--color-gray-900);
+      text-decoration: underline;
+    }
+
+    .link-display:empty {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Secure QR Sender</h1>
+      <p class="subtitle">Encrypt and display your session as a QR code or shareable link</p>
+    </div>
+
+    <div class="section">
+      <button id="generate" class="btn-primary">Generate Encrypted QR</button>
+      <div id="qr-container"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Shareable Link</div>
+      <div class="link-display" id="link-display"></div>
+      <div class="inline-actions" id="link-actions">
+        </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Encrypted Data</div>
+      <textarea id="encoded" readonly placeholder="Encrypted data will appear here"></textarea>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script>
+    // Wrapper to match QRCode.toCanvas API
+    window.QRCode = {
+      toCanvas: function(canvas, text, options) {
+        return new Promise((resolve, reject) => {
+          try {
+            const qr = qrcode(0, 'M');
+            qr.addData(text);
+            qr.make();
+            
+            const size = options?.width || 256;
+            const cellSize = Math.floor(size / qr.getModuleCount());
+            const actualSize = cellSize * qr.getModuleCount();
+            
+            canvas.width = actualSize;
+            canvas.height = actualSize;
+            const ctx = canvas.getContext('2d');
+            
+            for (let row = 0; row < qr.getModuleCount(); row++) {
+              for (let col = 0; col < qr.getModuleCount(); col++) {
+                ctx.fillStyle = qr.isDark(row, col) ? '#000000' : '#ffffff';
+                ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+              }
+            }
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
+    };
+  </script>
+  <script type="module">
+    let currentLinkUrl = '';
+    let currentData = null; // Store the original session data for email subject/body
+
+    async function encryptData(obj) {
+      const encoder = new TextEncoder();
+      const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encoded = encoder.encode(JSON.stringify(obj));
+      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoded);
+
+      const rawKey = await crypto.subtle.exportKey("raw", key);
+      const keyB64 = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
+      const ivB64 = btoa(String.fromCharCode(...iv));
+      const cipherB64 = btoa(String.fromCharCode(...new Uint8Array(cipher)));
+
+      return `${ivB64}.${keyB64}.${cipherB64}`;
+    }
+
+    function createMailtoLink(linkUrl, sessionData) {
+      const subject = encodeURIComponent(`Belief Code Session: ${sessionData.title || 'Untitled Session'}`);
+      const body = encodeURIComponent(
+        `Hello,\n\nHere is the link to access your secured session data. This link contains the encrypted information for your session, which you can load on another device.\n\nClient Name: ${sessionData.title || 'N/A'}\nSubject: ${sessionData.subject || 'N/A'}\n\nSession Link:\n${linkUrl}\n\nNote: This link is unique and secure. Please save it in a safe place.`
+      );
+      
+      return `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    document.getElementById("generate").onclick = async () => {
+      const button = document.getElementById("generate");
+      const linkActions = document.getElementById("link-actions");
+      linkActions.innerHTML = ''; // Clear mailto button on generation start
+      
+      try {
+        button.textContent = "Generating...";
+        button.disabled = true;
+        
+        let data = null;
+        
+        // --- Data Loading Logic ---
+        let raw = null;
+        const sessionKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('session-form-')) {
+            sessionKeys.push(key);
+          }
+        }
+        
+        if (sessionKeys.length > 0) {
+          sessionKeys.sort((a, b) => {
+            const timeA = a.split('-').slice(-1)[0];
+            const timeB = b.split('-').slice(-1)[0];
+            return timeB.localeCompare(timeA);
+          });
+          
+          const mostRecentKey = sessionKeys[0];
+          raw = localStorage.getItem(mostRecentKey);
+        }
+        
+        if (!raw) {
+          raw = localStorage.getItem("savedFormData");
+        }
+        
+        if (raw) {
+          data = JSON.parse(raw);
+        } else if (window.generateJSON) {
+          try {
+            data = window.generateJSON();
+          } catch (error) {
+            console.error("generateJSON failed:", error);
+            data = null;
+          }
+        }
+        
+        if (!data) {
+          data = { 
+            title: "Demo Client",
+            subject: "Demo Subject", 
+            details: "Demo details",
+            sessionType: "Demo Session",
+            sourceOfBelief: "Demo Source",
+            sections: [],
+            connectedEmotionsSections: [],
+            timestamp: new Date().toISOString()
+          };
+        }
+        
+        currentData = data; // Store data globally
+        // --- End Data Loading Logic ---
+
+        const encoded = await encryptData(data);
+
+        // Clear previous QR
+        const qrContainer = document.getElementById("qr-container");
+        qrContainer.innerHTML = '';
+        
+        if (typeof QRCode === "undefined") {
+          throw new Error("QR Code library not loaded. Please refresh the page.");
+        }
+        
+        // Create and append canvas
+        const canvas = document.createElement('canvas');
+        qrContainer.appendChild(canvas);
+
+        // Show QR
+        await QRCode.toCanvas(canvas, encoded, { width: 280, margin: 2 });
+        
+        document.getElementById("encoded").value = encoded;
+
+        // Create shareable link
+        const linkUrl = `${window.location.origin}/desktop-qr-receiver.html?data=${encodeURIComponent(encoded)}`;
+        currentLinkUrl = linkUrl; // Store link globally
+
+        const linkDisplay = document.getElementById("link-display");
+        linkDisplay.innerHTML = `<a href="${linkUrl}" target="_blank">${linkUrl}</a>`;
+        
+        // Create mailto button
+        const mailtoButton = document.createElement('button');
+        mailtoButton.textContent = 'Email Link to Myself';
+        mailtoButton.onclick = () => {
+          const mailtoLink = createMailtoLink(currentLinkUrl, currentData);
+          window.location.href = mailtoLink;
+        };
+        linkActions.appendChild(mailtoButton);
+        
+        button.textContent = "Generate Another QR";
+        button.disabled = false;
+      } catch (error) {
+        console.error("Error generating QR:", error);
+        button.textContent = "Error - Try Again";
+        button.disabled = false;
+        
+        // Show error to user
+        const qrContainer = document.getElementById("qr-container");
+        qrContainer.innerHTML = `<p style="color: var(--color-gray-600); text-align: center;">Error: ${error.message}</p>`;
+      }
+    };
+  </script>
+
+  <script type="module" src="./assets/main.js" onerror="console.error('Failed to load app bundle')"></script>
+  
+  <script type="module">
+    // Fallback generateJSON if the main app doesn't load
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        if (typeof window.generateJSON === "undefined") {
+          console.warn("App bundle didn't load, using fallback generateJSON");
+          window.generateJSON = function(clientName, subject, details, sessionType, sourceOfBelief, sections, connectedEmotionsSections, storageKey, inheritedFromValue) {
+            console.log("Fallback generateJSON called with:", arguments);
+            return {
+              title: clientName || "Demo Client",
+              subject: subject || "Demo Subject",
+              details: details || "Demo details",
+              sessionType: sessionType || "Demo Session",
+              sourceOfBelief: sourceOfBelief || "Demo Source",
+              inheritedFromValue: inheritedFromValue || "",
+              sections: sections || [],
+              connectedEmotionsSections: connectedEmotionsSections || [],
+              timestamp: new Date().toISOString(),
+            };
+          };
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

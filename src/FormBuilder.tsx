@@ -25,6 +25,12 @@ export interface ConnectedEmotionsSection {
   content: string;
 }
 
+export function isMobileDevice(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
 export function FormBuilder() {
   logger.info("FB", "FormBuilder component initializing");
 
@@ -44,6 +50,7 @@ export function FormBuilder() {
 const [dropTarget, setDropTarget] = useState<number | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [currentStorageKey, setCurrentStorageKey] = useState<string | null>(null);
+  const [isMobile] = useState(isMobileDevice());
 
   // Connected Emotions state
   const [connectedEmotionsSections, setConnectedEmotionsSections] = useState<ConnectedEmotionsSection[]>([]);
@@ -1305,6 +1312,20 @@ const handleConnectedEmotionsKeyDown = (e: React.KeyboardEvent<HTMLTextAreaEleme
             >
               view saved forms
             </button>
+            <button
+  type="button"
+  className="btn"
+  onClick={() => {
+    if (isMobile) {
+      window.open("/mobile-qr-sender.html", "_blank");
+    } else {
+      window.open("/desktop-qr-receiver.html", "_blank");
+    }
+  }}
+>
+  {isMobile ? "Share via QR/Link" : "Receive via QR/Link"}
+</button>
+
             <input
               type="file"
               ref={fileInputRef}

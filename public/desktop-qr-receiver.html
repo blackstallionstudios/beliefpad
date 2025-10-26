@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Receiver</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    * {
+      margin: 0;
+    }
+
+    body {
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #111827;
+      padding: 2rem 1rem;
+    }
+
+    :root {
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --color-white: #ffffff;
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-400: #9ca3af;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-800: #1f2937;
+      --color-gray-900: #111827;
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      font-family: var(--font-sans);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-gray-900);
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: var(--color-gray-600);
+    }
+
+    .section {
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-lg);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      background: var(--color-white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-gray-800);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    button {
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin: var(--spacing-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--color-gray-300);
+      background: var(--color-white);
+      color: var(--color-gray-700);
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-400);
+    }
+
+    button:active {
+      background: var(--color-gray-100);
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 320px;
+      margin: var(--spacing-md) auto;
+      display: none;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-md);
+      background: var(--color-gray-50);
+      color: var(--color-gray-900);
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-gray-400);
+      background: var(--color-white);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin: var(--spacing-md) 0;
+    }
+
+    #status {
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      text-align: center;
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #status:empty {
+      display: none;
+    }
+
+    #status.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    #status.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    #status.info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    a.download-link {
+      display: inline-block;
+      margin-top: var(--spacing-md);
+      padding: 0.625rem 1.25rem;
+      background: var(--color-gray-900);
+      color: var(--color-white);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: background 0.15s ease;
+    }
+
+    a.download-link:hover {
+      background: var(--color-gray-700);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Secure QR Receiver</h1>
+      <p class="subtitle">Scan the QR from your phone or paste a link below</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Camera Scan</div>
+      <div class="button-group">
+        <button id="startScan">Start Scanning</button>
+        <button id="stopScan" style="display:none;">Stop Scanning</button>
+      </div>
+      <div id="reader"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Manual Input</div>
+      <p class="subtitle" style="margin-bottom: var(--spacing-sm);">Paste the encrypted string or link:</p>
+      <textarea id="encoded" placeholder="Paste encrypted code or link here"></textarea>
+      <div class="button-group">
+        <button id="decode">Decrypt and Download</button>
+      </div>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" onerror="window.qrLibraryError = true"></script>
+  <script>
+    window.addEventListener("load", () => {
+
+      const status = document.getElementById("status");
+      const encodedBox = document.getElementById("encoded");
+      const readerDiv = document.getElementById("reader");
+      const startScan = document.getElementById("startScan");
+      const stopScan = document.getElementById("stopScan");
+      let reader;
+      let libraryLoaded = false;
+
+      // Wait for library to load
+      function waitForLibrary() {
+        return new Promise((resolve) => {
+          if (window.qrLibraryError) {
+            resolve(false);
+            return;
+          }
+          if (typeof Html5Qrcode !== "undefined") {
+            libraryLoaded = true;
+            resolve(true);
+          } else {
+            let attempts = 0;
+            const checkInterval = setInterval(() => {
+              attempts++;
+              if (window.qrLibraryError) {
+                clearInterval(checkInterval);
+                resolve(false);
+              } else if (typeof Html5Qrcode !== "undefined") {
+                libraryLoaded = true;
+                clearInterval(checkInterval);
+                resolve(true);
+              } else if (attempts > 50) { // 5 seconds
+                clearInterval(checkInterval);
+                resolve(false);
+              }
+            }, 100);
+          }
+        });
+      }
+
+      // Initialize library check
+      waitForLibrary();
+
+      function setStatus(message, type = 'info') {
+        status.textContent = message;
+        status.className = type;
+      }
+
+      // Handle direct link (?data=)
+      const params = new URLSearchParams(window.location.search);
+      const dataParam = params.get("data");
+      if (dataParam) {
+        encodedBox.value = dataParam;
+        decodeData(dataParam);
+      }
+
+      // ---- QR scanning controls ----
+      startScan.onclick = async () => {
+        try {
+          // Wait for library if not loaded yet
+          if (!libraryLoaded) {
+            setStatus("Loading QR scanner library...", 'info');
+            const loaded = await waitForLibrary();
+            
+            if (!loaded) {
+              setStatus("QR scanner library failed to load. Try using manual input instead.", 'error');
+              return;
+            }
+          }
+          
+          if (typeof Html5Qrcode === "undefined") {
+            setStatus("QR scanner library not available. Try using manual input instead.", 'error');
+            return;
+          }
+          readerDiv.style.display = "block";
+          const cameras = await Html5Qrcode.getCameras();
+          const cameraId = cameras[0].id;
+          reader = new Html5Qrcode("reader");
+          startScan.style.display = "none";
+          stopScan.style.display = "inline-block";
+          setStatus("Scanning for QR code...", 'info');
+          reader.start(
+            cameraId,
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            (decodedText) => {
+              reader.stop();
+              readerDiv.style.display = "none";
+              stopScan.style.display = "none";
+              startScan.style.display = "inline-block";
+              encodedBox.value = decodedText;
+              decodeData(decodedText);
+            }
+          );
+        } catch (err) {
+          setStatus("Camera error: " + err.message, 'error');
+        }
+      };
+
+      stopScan.onclick = () => {
+        reader?.stop();
+        readerDiv.style.display = "none";
+        startScan.style.display = "inline-block";
+        stopScan.style.display = "none";
+        setStatus("Scanning stopped.", 'info');
+      };
+
+      document.getElementById("decode").onclick = () => {
+        const val = encodedBox.value.trim();
+        if (val) {
+          decodeData(val);
+        } else {
+          setStatus("Please paste encrypted data first.", 'error');
+        }
+      };
+
+      // ---- Decrypt and create downloadable file ----
+      async function decodeData(encoded) {
+        try {
+          // The encoded string is already clean - just split it
+          const [ivB64, keyB64, cipherB64] = encoded.split(".");
+          
+          if (!ivB64 || !keyB64 || !cipherB64) {
+            throw new Error("Invalid format. Expected: iv.key.cipher");
+          }
+          
+          const iv = Uint8Array.from(atob(ivB64), (c) => c.charCodeAt(0));
+          const keyBytes = Uint8Array.from(atob(keyB64), (c) => c.charCodeAt(0));
+          const cipherBytes = Uint8Array.from(atob(cipherB64), (c) => c.charCodeAt(0));
+
+          const key = await crypto.subtle.importKey("raw", keyBytes, "AES-GCM", true, ["decrypt"]);
+          const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, cipherBytes);
+          const decoded = new TextDecoder().decode(plain);
+          const obj = JSON.parse(decoded);
+
+          const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "imported-session.json";
+          a.className = "download-link";
+          a.textContent = "Download Decrypted Session";
+          
+          // Clear previous download links
+          const oldLinks = document.querySelectorAll('.download-link');
+          oldLinks.forEach(link => link.remove());
+          
+          status.insertAdjacentElement('afterend', a);
+
+          // Auto-download and show message
+          a.click();
+          setStatus("Session decrypted successfully! File downloaded.", 'success');
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        } catch (err) {
+          console.error(err);
+          setStatus("Decryption failed: " + err.message, 'error');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

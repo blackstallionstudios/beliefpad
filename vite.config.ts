@@ -1,21 +1,27 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // ✅ Relative paths so assets work on Vercel
+  base: './', 
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    minify: 'esbuild', // Fast + small output
+    minify: 'esbuild', 
     sourcemap: false,  // Optional: remove if you want source maps in prod
-    // treeshake: true,   // Removes unused code
     chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
-        // Let Vite/Rollup handle safe splitting automatically
+        
+        entryFileNames: (chunkInfo) => {
+          
+          return chunkInfo.name === 'index' ? 'assets/main.js' : 'assets/[name]-[hash].js';
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     }
   },
-  publicDir: 'public' // This will copy files from public/ to dist/
+  publicDir: 'public' 
 })
